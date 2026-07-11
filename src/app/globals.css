@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #03CEB4;
+  --color-secondary: #03CEB4;
+  --color-tertiary: #03CEB4;
+  --color-quaternary: #03CEB4;
+  --color-quinary: #03CEB4;
+  --color-senary: #03CEB4;
+  --color-septenary: #03CEB4;
+  --color-primary: #03CEB4;
+  --gradient-primary: linear-gradient(
+    180deg, 
+    #011720 0%, 
+    #02534B 50%,
+    #047D6B 75%,
+    #02C5A5 100%
+  );
+}
+
+body {
+  color: white;
+  font-family: var(--font-raleway);
+}
+
+.font-title {
+  font-family: var(--font-geist); 
+}
+
+.font-number {
+  font-family: var(--font-inter);
+}
+
+.hero {
+  background: var(--gradient-primary);
+  background-src: url('/public/videos/hero.mp4');
+} 
+
+
