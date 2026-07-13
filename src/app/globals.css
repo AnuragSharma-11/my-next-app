@@ -9,6 +9,9 @@
   --color-senary: #03CEB4;
   --color-septenary: #03CEB4;
   --color-primary: #03CEB4;
+  --color-secondwhite:#E3E3E3;
+  --color-darkblue:#001C26;
+  --color-greenprimary: #00D286;
   --gradient-primary: linear-gradient(
     180deg, 
     #011720 0%, 
@@ -33,7 +36,6 @@ body {
 
 .hero {
   background: var(--gradient-primary);
-  background-src: url('/public/videos/hero.mp4');
 } 
 
 
