@@ -12,6 +12,8 @@
   --color-secondwhite:#E3E3E3;
   --color-darkblue:#001C26;
   --color-greenprimary: #00D286;
+  --color-tagcolor:#0CFFD7;
+  --color-darkteelgrn:#00594B;
   --gradient-primary: linear-gradient(
     180deg, 
     #011720 0%, 
@@ -38,4 +40,14 @@ body {
   background: var(--gradient-primary);
 } 
 
+.overview{
+  background:var(--color-darkblue);
+}
 
+.tag_line{
+  background: var(--color-tagcolor)
+}
+
+.endline {
+  background: var(--color-darkteelgrn);
+}

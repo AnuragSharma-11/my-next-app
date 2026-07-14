@@ -1,10 +1,14 @@
-import React from 'react'
+import React from "react";
 import Hero from "./home-sections/Hero";
+import Overview from "./home-sections/Overview";
 
 const page = () => {
   return (
-    <Hero />
+    <>
+      <Hero />
+      <Overview />
+    </>
   );
-}
+};
 
-export default page
+export default page;
