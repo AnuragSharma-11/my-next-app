@@ -1,17 +1,30 @@
 "use client";
 import React, { useRef } from "react";
 import Primarybtn from "../components/Primarybtn";
-import { useScroll, useTransform  } from "motion/react";
+import { useScroll, useTransform, useSpring, motion } from "motion/react";
 
 const Overview = () => {
   const sectionRef = useRef(null);
 
-  const {scrollYProgress} = useScroll({
-    target:sectionRef,
-    offset:["start start", "end end"],
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
   });
 
-  const imageWidth = useTransform(scrollYProgress, [0, 0.7], ["100%", "calc(100vw - 240px)"]);
+  const imageWidth = useTransform(
+    scrollYProgress,
+    [0.15, 0.65],
+    ["100%", "calc(100vw - 240px)"],
+  );
+
+  const imageX = useTransform(scrollYProgress, [0.25, 0.65], [0, -320]);
+
+  const imageY = useTransform(scrollYProgress, [0.25, 0.65], [0, -40]);
+
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 15,
+  });
 
   return (
     <section className="overview h-[300vh] relative" ref={sectionRef}>
@@ -41,9 +54,9 @@ const Overview = () => {
         </div>
 
         {/* BOTTOM CONTENT CONTAINER */}
-        <div className="grid grid-cols-[380px_1fr] gap-[80px] mt-40 items-start">
+        <div className="relative flex gap-[80px] mt-40 items-start">
           {/* LEFT CONTENT */}
-          <div className="flex flex-col h-full justify-between">
+          <div className="w-[380px] flex flex-col h-full justify-between shrink-0">
             <span className="flex flex-col gap-12">
               {/* FIRST HEADING */}
               <p className="text-[24px] font-medium text-white leading-[1.5]">
@@ -66,16 +79,23 @@ const Overview = () => {
             <div className="endline w-30 h-2"></div>
           </div>
           {/* RIGHT CONTENT IMAGE CONTAINER */}
-          <div className="w-full ">
+          <motion.div
+            className="relative overflow-hidden"
+            style={{
+              width: imageWidth,
+              x: imageX,
+              y: imageY,
+            }}
+          >
             <img
               src="/Home-Page-assets/Images/Overview-image.png"
-              className="w-full h-full object-cover "
+              alt=""
+              className="w-full h-full object-cover"
             />
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
   );
 };
-
 export default Overview;
