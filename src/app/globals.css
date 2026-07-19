@@ -14,12 +14,22 @@
   --color-greenprimary: #00D286;
   --color-tagcolor:#0CFFD7;
   --color-darkteelgrn:#00594B;
+  --color-blacklight: #000101;
   --gradient-primary: linear-gradient(
     180deg, 
     #011720 0%, 
     #02534B 50%,
     #047D6B 75%,
     #02C5A5 100%
+  );
+  /* Read from the About > Our Origin container (Figma node 1:4777).
+     Green crown falling to near-black so the section can sit directly
+     under the hero without a visible seam. */
+  --gradient-greenBlue: linear-gradient(
+    180deg,
+    #019A81 0%,
+    #019980 50%,
+    #021B23 100%
   );
 }
 
@@ -44,10 +54,67 @@ body {
   background:var(--color-darkblue);
 }
 
+/* About hero: two stacked gradients. The base sets the dark-to-teal
+   fall, the wash sits on top and is transparent at the crown so the
+   heading keeps its contrast while the horizon still glows. */
+.about-hero {
+  background: linear-gradient(
+    180deg,
+    #011720 0%,
+    #02534B 49.971%,
+    #047D6B 74.981%,
+    #0A7261 100%
+  );
+}
+
+.about-origin {
+  background: var(--gradient-greenBrown);
+}
+
+.about-hero__wash {
+  background: linear-gradient(
+    180deg,
+    rgba(1, 23, 32, 0) 0%,
+    rgba(2, 83, 75, 0.4) 38.676%,
+    rgba(4, 125, 107, 0.6) 57.751%,
+    #009A81 100%
+  );
+}
+
 .tag_line{
   background: var(--color-tagcolor)
 }
 
+/* ------------------------------------------------------------------
+   MANIFESTO — a pinned 100vw x 100vh scene.
+
+   Almost nothing is needed here: the room, the numerals and the figure
+   are all photographic, composited in the section itself. The only job
+   left for CSS is the colour behind the photo, which shows for the one
+   frame before it decodes and in the letterbox if a viewport ever falls
+   outside what the stage can cover.
+   ------------------------------------------------------------------ */
+.manifesto {
+  background: var(--color-blacklight);
+}
+
+/* Thin rule that precedes the section eyebrow. */
+.manifesto__rule {
+  background: var(--color-tagcolor);
+}
+
 .endline {
   background: var(--color-darkteelgrn);
+}
+
+.footer {
+  background: var(--color-blacklight);
+}
+
+.about-hero{
+  background: var(--gradient-primary);
+}
+
+.about-origin{
+  background: var(--gradient-greenBlue);
 }

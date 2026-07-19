@@ -1,0 +1,68 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 477.261 477.261" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 1707480673">
+<circle id="Ellipse 100" opacity="0.8" cx="238.631" cy="238.631" r="237.631" transform="matrix(1 0 0 -1 0 477.261)" fill="var(--fill-0, #D9D9D9)" fill-opacity="0.1" stroke="url(#paint0_linear_0_235)" stroke-width="2"/>
+<g id="Group 48095594">
+<circle id="Ellipse 105" cx="16.1045" cy="326.622" r="7" fill="var(--fill-0, #E2F6F3)"/>
+<g id="Ellipse 103" filter="url(#filter0_f_0_235)">
+<circle cx="16.1047" cy="326.624" r="5.92308" fill="var(--fill-0, #8AF5E3)"/>
+</g>
+<g id="Ellipse 104" filter="url(#filter1_f_0_235)">
+<circle cx="16.1046" cy="326.621" r="4.30769" fill="var(--fill-0, #1EF4D1)"/>
+</g>
+</g>
+<g id="Star-Pointer">
+<circle id="Ellipse 105_2" cx="57.1045" cy="86.6216" r="7" fill="var(--fill-0, #E2F6F3)"/>
+<g id="Ellipse 103_2" filter="url(#filter2_f_0_235)">
+<circle cx="57.1047" cy="86.6228" r="5.92308" fill="var(--fill-0, #8AF5E3)"/>
+</g>
+<g id="Ellipse 104_2" filter="url(#filter3_f_0_235)">
+<circle cx="57.1046" cy="86.6207" r="4.30769" fill="var(--fill-0, #1EF4D1)"/>
+</g>
+</g>
+<g id="Star-Pointer_2">
+<circle id="Ellipse 105_3" cx="352.104" cy="29.6214" r="7" fill="var(--fill-0, #E2F6F3)"/>
+<g id="Ellipse 103_3" filter="url(#filter4_f_0_235)">
+<circle cx="352.105" cy="29.6226" r="5.92308" fill="var(--fill-0, #8AF5E3)"/>
+</g>
+<g id="Ellipse 104_3" filter="url(#filter5_f_0_235)">
+<circle cx="352.105" cy="29.6205" r="4.30769" fill="var(--fill-0, #1EF4D1)"/>
+</g>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_0_235" x="1.56625" y="312.085" width="29.0769" height="29.0769" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="4.30769" result="effect1_foregroundBlur_0_235"/>
+</filter>
+<filter id="filter1_f_0_235" x="6.41226" y="316.929" width="19.3846" height="19.3846" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="2.69231" result="effect1_foregroundBlur_0_235"/>
+</filter>
+<filter id="filter2_f_0_235" x="42.5663" y="72.0843" width="29.0769" height="29.0769" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="4.30769" result="effect1_foregroundBlur_0_235"/>
+</filter>
+<filter id="filter3_f_0_235" x="47.4123" y="76.9284" width="19.3846" height="19.3846" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="2.69231" result="effect1_foregroundBlur_0_235"/>
+</filter>
+<filter id="filter4_f_0_235" x="337.566" y="15.0841" width="29.0769" height="29.0769" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="4.30769" result="effect1_foregroundBlur_0_235"/>
+</filter>
+<filter id="filter5_f_0_235" x="342.412" y="19.9282" width="19.3846" height="19.3846" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="2.69231" result="effect1_foregroundBlur_0_235"/>
+</filter>
+<linearGradient id="paint0_linear_0_235" x1="238.631" y1="0" x2="238.631" y2="477.261" gradientUnits="userSpaceOnUse">
+<stop stop-color="#89F6E4"/>
+<stop offset="1" stop-color="#59F1D8"/>
+</linearGradient>
+</defs>
+</svg>

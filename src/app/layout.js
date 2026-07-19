@@ -29,9 +29,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="english">
       <body className={`${raleway.variable} ${geist.variable} ${inter.variable}`} >
-
-
-
         
         <Navbar /> 
         {children}
