@@ -10,6 +10,7 @@ import {
 } from "motion/react";
 
 import teamPhoto from "../assets/systems/systems-team-photo.png";
+import Eyebrow from "../../components/Eyebrow";
 
 /* ------------------------------------------------------------------
    MOTION
@@ -129,7 +130,11 @@ const About_Systems = () => {
             resolves to exactly 52px at 1440 and grows from there, with a
             ceiling so it cannot run away on ultrawide. */}
         <motion.div
-          className="absolute left-[8.333%] top-[10.87%] z-10 flex w-[32.3%] flex-col gap-[clamp(1rem,2.2vw,2rem)]"
+          /* 32.3% of the frame is a comfortable measure at 1440 and a
+             121px ribbon at 375. The copy therefore keeps the comp's
+             fraction only from lg, and takes most of the screen below
+             it — the photo is behind it either way. */
+          className="absolute left-[8.333%] top-[18%] z-10 flex w-[83.334%] flex-col gap-[clamp(1rem,2.2vw,2rem)] lg:top-[10.87%] lg:w-[32.3%]"
           style={{ opacity: reduceMotion ? 1 : copyOpacity }}
         >
           <h2 className="text-[clamp(2rem,3.6vw,4rem)] font-normal leading-[1.2] text-white">
@@ -145,11 +150,8 @@ const About_Systems = () => {
             1320 of 1440, i.e. the same 8.333% inset as the copy on the
             left, so anchoring it by `right` keeps the two margins equal
             at any width instead of drifting apart. */}
-        <div className="absolute right-[8.333%] top-[10.87%] z-10 flex items-center gap-[16px]">
-          <span className="h-[4px] w-[22px] shrink-0 bg-[#2dfbd9]" />
-          <p className="whitespace-nowrap text-[clamp(1rem,1.53vw,1.65rem)] font-semibold leading-[1.5] tracking-[-0.44px] text-[#2dfbd9]">
-            THE AASHITA MANIFESTO
-          </p>
+        <div className="absolute right-[8.333%] top-[10.87%] z-10">
+          <Eyebrow label="THE AASHITA MANIFESTO" />
         </div>
 
         {/* PHOTO — sized to the full stage and scaled DOWN into the card

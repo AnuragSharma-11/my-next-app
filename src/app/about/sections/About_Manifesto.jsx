@@ -27,6 +27,7 @@ import leaderLeftTop from "../assets/manifesto/leader-left-top.svg";
 import leaderRightTop from "../assets/manifesto/leader-right-top.svg";
 import leaderLeftBottom from "../assets/manifesto/leader-left-bottom.svg";
 import leaderRightBottom from "../assets/manifesto/leader-right-bottom.svg";
+import Eyebrow from "../../components/Eyebrow";
 
 /* ==================================================================
    THE AASHITA MANIFESTO  (Figma 1:4801, component set 2:7743)
@@ -282,12 +283,63 @@ const About_Manifesto = () => {
   return (
     <section
       ref={sectionRef}
-      className="manifesto relative w-full"
       /* One screen of scroll per belief, derived from the array so a
-         sixth belief needs no change here. */
-      style={{ height: `${MANIFESTO.length * 100}vh` }}
+         sixth belief needs no change here — but only where the scene
+         actually plays. Below lg the odometer is not rendered, and a
+         runway with nothing running on it is 500vh of dead scroll, so
+         the height collapses with it. The runway goes through a custom
+         property because the value is derived in JS and a media query
+         cannot reach an inline style. */
+      className="manifesto relative h-auto w-full lg:h-[var(--manifesto-runway)]"
+      style={{ "--manifesto-runway": `${MANIFESTO.length * 100}vh` }}
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+      {/* ============ STATIC FALLBACK (below lg) ============
+          The scene is a fixed 1440x914 artboard scaled to COVER the
+          viewport. Cover is the right call on a wide screen and fatal on
+          a narrow one: at 375 the scale is driven by height, the stage
+          renders ~1457px wide and the heading, the belief copy and every
+          corner label sit outside the viewport entirely. Switching to
+          contain would fix the framing and shrink 16px body copy to
+          about 4px, which is not reading either.
+
+          So the odometer does not run here. The same five beliefs are
+          laid out as ordinary stacked copy — the mechanism was always
+          the decoration and the beliefs were always the content. */}
+      <div className="flex flex-col gap-[56px] px-[var(--gutter)] py-[80px] lg:hidden">
+        <div className="flex flex-col gap-[24px]">
+          <Eyebrow label="THE AASHITA MANIFESTO" barColor="#e3e3e3" />
+          <h2 className="text-[32px] font-normal leading-[1.2] text-white sm:text-[40px]">
+            {/* No forced break here — the comp's line turn was measured
+                against a 623px box that does not exist at this width. */}
+            What We Build Changes. What We Believe Doesn&rsquo;t.
+          </h2>
+          <p className="text-[18px] font-medium leading-[1.5] tracking-[-0.44px] text-[#e3e3e3]">
+            We solve real human challenges with intelligent, scalable products
+            that create measurable impact.
+          </p>
+        </div>
+
+        <ol className="flex flex-col gap-[40px]">
+          {MANIFESTO.map((m) => (
+            <li key={m.number} className="flex flex-col gap-[12px]">
+              <p className="font-number text-[32px] font-normal leading-[1.2] text-[#2f2d2b]">
+                {m.number}
+              </p>
+              <p className="text-[14px] font-semibold uppercase leading-[1.5] tracking-[-0.32px] text-[#24f3e6]">
+                {m.label}
+              </p>
+              <p className="text-[20px] font-medium uppercase leading-[1.5] tracking-[-0.44px] text-white">
+                {m.heading.join(" ")}
+              </p>
+              <p className="text-[16px] font-normal leading-[1.5] tracking-[-0.32px] text-white">
+                {m.body}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="sticky top-0 hidden h-screen w-full overflow-hidden lg:block">
         {/* STAGE — one artboard at true Figma size, scaled as a single
             unit so the room, the numeral, the leader lines and the type
             all stay in the exact relationship the comp defines. */}
@@ -473,11 +525,8 @@ const About_Manifesto = () => {
                 </p>
               </div>
 
-              <div className="flex shrink-0 items-center" style={{ gap: 16 }}>
-                <span className="h-[4px] w-[22px] shrink-0 bg-[#e3e3e3]" />
-                <p className="whitespace-nowrap text-[22px] font-semibold leading-[1.5] tracking-[-0.44px] text-[#2dfbd9]">
-                  THE AASHITA MANIFESTO
-                </p>
+              <div className="shrink-0">
+                <Eyebrow label="THE AASHITA MANIFESTO" barColor="#e3e3e3" />
               </div>
             </div>
 

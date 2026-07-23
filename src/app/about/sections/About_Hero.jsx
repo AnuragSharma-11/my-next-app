@@ -1,6 +1,5 @@
 "use client";
 import { motion } from "motion/react";
-import Navbar from "../../components/Navbar";
 
 import ringOuter from "../assets/hero/ring-1.svg";
 import ringMid from "../assets/hero/ring-2.svg";
@@ -83,10 +82,11 @@ const stage = {
 };
 
 const riseIn = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 24, filter: "blur(6px)" },
   visible: {
     opacity: 1,
     y: 0,
+    filter: "blur(0px)",
     transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
   },
 };
@@ -130,21 +130,23 @@ const About_Hero = () => {
       >
         {/* NAV — variant 2
         <motion.div variants={riseIn}>
-          <Navbar />
         </motion.div> */}
 
         {/* HEADING + BODY — variant 3 */}
-        <div className="pt-[118px] text-center mt-60">
+        {/* Without the orbit below lg there is nothing to sit under, so
+            the copy takes the middle of the screen instead of hanging
+            off a 240px top margin that was measured against it. */}
+        <div className="flex h-full flex-col justify-center px-[var(--gutter)] text-center lg:block lg:h-auto lg:px-0 lg:pt-[118px] lg:mt-30">
           <motion.h1
             variants={riseIn}
-            className="text-[72px] font-normal leading-[1.2] text-white"
+            className="text-[length:var(--text-heading)] font-normal leading-[1.2] text-white"
           >
             We&rsquo;re Aashita
           </motion.h1>
 
           <motion.p
             variants={riseIn}
-            className="mx-auto mt-[38px] max-w-[558px] text-[16px] font-medium leading-[1.5] tracking-[-0.32px] text-white"
+            className="mx-auto mt-[38px] max-w-[960px] text-[length:var(--text-subheading)] font-medium leading-[1.5] tracking-[-0.32px] text-white"
           >
             We build and scale AI-powered products that solve meaningful
             problems across industries. Bringing intelligence, technology, and
@@ -152,10 +154,19 @@ const About_Hero = () => {
           </motion.p>
         </div>
 
-        {/* ORBIT — variant 4, then rotates forever */}
+        {/* ORBIT — variant 4, then rotates forever.
+
+            HIDDEN BELOW lg, DELIBERATELY. Every number in this scene —
+            ring offsets, transformOrigin, the five label radii — is an
+            absolute pixel resolved from each SVG's true post-matrix
+            centre. There is no proportional version of that: shrink the
+            box and the rings stop being concentric and the labels leave
+            their ring. The orbit is decoration and the copy is not, so
+            on small screens the copy takes the whole screen and the
+            orbit sits this one out rather than arriving broken. */}
         <motion.div
           variants={orbitIn}
-          className="absolute left-1/2 top-[800px] -translate-x-1/2"
+          className="absolute left-1/2 top-[700px] hidden -translate-x-1/2 lg:block"
           style={{ width: ORBIT_BOX, height: ORBIT_BOX }}
         >
           {/* RINGS — each spins at its own pace so the field never looks

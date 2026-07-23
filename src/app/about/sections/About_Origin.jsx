@@ -6,6 +6,8 @@ import originPhoto from "../assets/our-origin/origin-photo.png";
 import arcOuter from "../assets/our-origin/arc-outer.svg";
 import arcInner from "../assets/our-origin/arc-inner.svg";
 import dot from "../assets/our-origin/dot.svg";
+import Container from "../../components/Container";
+import Eyebrow from "../../components/Eyebrow";
 
 /* ------------------------------------------------------------------
    MOTION
@@ -26,10 +28,11 @@ const stage = {
 };
 
 const riseIn = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
   visible: {
     opacity: 1,
     y: 0,
+    filter: "blur(0px)",
     transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
   },
 };
@@ -48,8 +51,8 @@ const About_Origin = () => {
         <img src={arcInner.src} alt="" className="h-full w-full" />
       </div>
 
-      <motion.div
-        className="relative z-10 mx-auto flex w-[1200px] max-w-full flex-col gap-[80px] px-[120px] xl:px-0"
+      <Container as={motion.div}
+        className="relative z-10 flex flex-col gap-[80px]"
         variants={stage}
         initial="hidden"
         whileInView="visible"
@@ -58,13 +61,16 @@ const About_Origin = () => {
         {/* HEADING ROW — eyebrow + intro on the left, display type right.
             items-end baselines them against each other regardless of how
             the copy wraps. */}
-        <div className="flex w-full items-end gap-[16px]">
+        {/* Below lg the display type would be fighting the intro for a
+            column neither can hold, so the pair stacks and the heading
+            goes back to reading left-aligned like ordinary prose. */}
+        <div className="flex w-full flex-col gap-[32px] lg:flex-row lg:items-end lg:gap-[16px]">
           <div className="flex min-w-px flex-1 flex-col gap-[24px]">
-            <motion.div variants={riseIn} className="flex items-center gap-[20px]">
-              <span className="h-[4px] w-[36px] bg-[#011a22]" />
-              <p className="text-[22px] font-semibold leading-[1.54] tracking-[-0.44px] text-[#011a22]">
-                OUR ORIGIN
-              </p>
+            <motion.div variants={riseIn}>
+              {/* Near-black rather than teal: this section sits on a
+                  light green field, so the dark-section colour would
+                  vanish. Wider bar is the comp's too (36 vs 22). */}
+              <Eyebrow label="OUR ORIGIN" color="#011a22" barWidth={36} />
             </motion.div>
 
             <motion.p
@@ -78,7 +84,7 @@ const About_Origin = () => {
 
           <motion.h2
             variants={riseIn}
-            className="w-[483px] shrink-0 text-right text-[52px] font-normal leading-[1.2] text-[#012429]"
+            className="w-full text-left text-[32px] font-normal leading-[1.2] text-[#012429] sm:text-[40px] lg:w-[483px] lg:shrink-0 lg:text-right lg:text-[52px]"
           >
             It Started With
             <br />A Belief
@@ -88,18 +94,22 @@ const About_Origin = () => {
         {/* FEATURE CARD — photo left, copy right */}
         <motion.div
           variants={riseIn}
-          className="flex h-[500px] w-full items-center overflow-hidden rounded-[12px] border border-[#01211d] bg-[#272727]"
+          className="flex h-auto w-full flex-col items-stretch overflow-hidden rounded-[12px] border border-[#01211d] bg-[#272727] lg:h-[500px] lg:flex-row lg:items-center"
         >
           {/* PHOTO — the source is 1672x941 but only ever shown at
               784x500, so next/image resizes and re-encodes it rather
               than shipping the full 2.2MB original.
               sizes tells it which width to actually generate. */}
-          <div className="relative h-full w-[784px] shrink-0">
+          {/* 784 + 416 is the full 1200 column, so the pair only sits
+              side by side at 1440. Between lg and there the photo gives
+              up whatever the copy panel needs; below lg it becomes a
+              banner above the copy at the comp's own aspect. */}
+          <div className="relative aspect-[784/500] w-full lg:aspect-auto lg:h-full lg:w-auto lg:flex-1 min-[1440px]:w-[784px] min-[1440px]:flex-none">
             <Image
               src={originPhoto}
               alt="The Aashita team at work"
               fill
-              sizes="784px"
+              sizes="(min-width: 1024px) 784px, 100vw"
               className="object-cover"
               placeholder="blur"
             />
@@ -115,13 +125,13 @@ const About_Origin = () => {
           </div>
 
           {/* COPY PANEL */}
-          <div className="flex h-full w-[416px] shrink-0 flex-col px-[30px] py-[32px]">
+          <div className="flex h-auto w-full flex-col px-[20px] py-[28px] sm:px-[30px] sm:py-[32px] lg:h-full lg:w-[416px] lg:shrink-0">
             <div className="flex min-h-px flex-1 flex-col gap-[32px]">
               <p className="text-[22px] font-semibold leading-[1.5] tracking-[-0.44px] text-[#2dfbd9]">
                 OUR ORIGIN
               </p>
 
-              <div className="flex min-h-px flex-1 flex-col items-end justify-between">
+              <div className="flex min-h-px flex-1 flex-col items-start justify-between gap-[24px] lg:items-end lg:gap-0">
                 <div className="flex w-full flex-col gap-[22px]">
                   <h3 className="text-[28px] font-medium leading-[1.5] tracking-[-0.56px] text-[#e8e8e8]">
                     Technology Should
@@ -148,7 +158,7 @@ const About_Origin = () => {
             </div>
           </div>
         </motion.div>
-      </motion.div>
+      </Container>
     </section>
   );
 };

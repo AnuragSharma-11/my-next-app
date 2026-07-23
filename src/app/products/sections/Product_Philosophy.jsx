@@ -8,6 +8,7 @@ import glow from "../assets/philosophy/philosophy-glow.svg";
 import nodeRing from "../assets/philosophy/timeline-node-ring.svg";
 import nodeDot from "../assets/philosophy/timeline-node-dot.svg";
 import rule from "../assets/philosophy/timeline-rule.svg";
+import Eyebrow from "../../components/Eyebrow";
 
 /* ==================================================================
    OUR PHILOSOPHY  (Figma 1:3927 "Project container", 1440x1450)
@@ -122,7 +123,7 @@ const Product_Philosophy = () => {
       className="product-philosophy relative w-full overflow-hidden"
       style={{
         backgroundImage:
-          "linear-gradient(180deg, #011720 0%, #02534B 49.971%, #047D6B 74.981%, #02C5A5 100%)",
+          "linear-gradient(180deg, #012532 0%, #02534B 49.971%, #047D6B 74.981%, #02C5A5 100%)",
       }}
     >
       {/* ================= DECORATIVE ART =================
@@ -171,13 +172,18 @@ const Product_Philosophy = () => {
 
       {/* Figma's 120px margin on a 1440 frame is 8.333%, so the column is
           expressed as a fraction and capped at the comp's own 1200px. */}
-      <div className="relative z-10 mx-auto w-[83.333%] max-w-[1200px]">
+      {/* The column was w-[83.333%] — the comp's 120/1440 ratio held as a
+          percentage, which on a 375px phone leaves a 31px inset that does
+          not match any other section on the page. It now rides the same
+          --gutter ladder every other section uses and still resolves to a
+          1200px column inside a 1440 frame. */}
+      <div className="relative z-10 mx-auto w-full max-w-[var(--frame)] px-[var(--gutter)]">
         {/* ================= HEADER ================= */}
         <div className="flex flex-col gap-[16px] pt-[90px] lg:flex-row lg:items-start">
           <motion.div
             className="flex flex-1 flex-col gap-[24px]"
             variants={{
-              hidden: { opacity: 0, y: 24 },
+              hidden: { opacity: 0, y: 24, filter: "blur(6px)" },
               shown: { opacity: 1, y: 0 },
             }}
             {...reveal(0)}
@@ -198,15 +204,16 @@ const Product_Philosophy = () => {
           <motion.div
             className="flex shrink-0 items-center gap-[16px] lg:pt-[4px]"
             variants={{
-              hidden: { opacity: 0, y: 24 },
+              hidden: { opacity: 0, y: 24, filter: "blur(6px)" },
               shown: { opacity: 1, y: 0 },
             }}
             {...reveal(0.1)}
           >
-            <span className="h-[4px] w-[22px] shrink-0 rounded-full bg-[#e3e3e3]" />
-            <p className="whitespace-nowrap text-[clamp(1rem,1.53vw,1.375rem)] font-semibold leading-[1.5] tracking-[-0.44px] text-[#a3e4ff]">
-              OUR PHILOSOPHY
-            </p>
+            <Eyebrow
+              label="OUR PHILOSOPHY"
+              color="#a3e4ff"
+              barColor="#e3e3e3"
+            />
           </motion.div>
         </div>
 
@@ -283,7 +290,7 @@ const Product_Philosophy = () => {
                 <motion.div
                   className="mt-[16px] flex flex-col gap-[8px] lg:flex-row lg:items-baseline lg:justify-between lg:gap-[40px]"
                   variants={{
-                    hidden: { opacity: 0, y: 16 },
+                    hidden: { opacity: 0, y: 16, filter: "blur(6px)" },
                     shown: { opacity: 1, y: 0 },
                   }}
                   {...reveal(base + 0.25)}

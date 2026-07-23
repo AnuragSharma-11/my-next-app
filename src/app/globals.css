@@ -1,6 +1,65 @@
 @import "tailwindcss";
 
 :root {
+  /* ----------------------------------------------------------------
+     THE LAYOUT GRID — the only place side spacing is defined.
+
+     Every Figma artboard is a 1440 frame with a 120px gutter, leaving
+     a 1200px content column. Change --gutter here and the header, the
+     home hero and every section on all six pages follow.
+
+     These are CSS variables rather than JS constants because Tailwind
+     scans for LITERAL class strings at build time: `px-[${GUTTER}px]`
+     compiles to nothing at all. A variable is read at runtime, so
+     px-[var(--gutter)] genuinely resolves to this one declaration.
+
+     THE GUTTER IS FLUID, not a fixed value and not a breakpoint
+     ladder. clamp(20px, 5vw, 120px) reads as: never tighter than 20px
+     (a phone still needs breathing room), never wider than 120px (the
+     comp's value, and past that the page starts looking empty), and in
+     between it tracks the viewport smoothly so there is no visible
+     jump at any width.
+
+     --frame is 1760, not the comp's 1440. The comp is a fixed artboard;
+     a browser is not. Capping at 1440 meant a 1920 monitor showed a
+     1200px column with 360px of dead margin either side — the content
+     read as narrow and the sides as wasted. At 1760 the same monitor
+     gets a 1568px column.
+
+     TRADE-OFF, stated plainly: section internals still carry Figma's
+     literal pixel widths, which were measured against a 1200 column.
+     They do not grow with this — they simply get more room around
+     them. The layout is wider; the individual blocks are unchanged.
+     ---------------------------------------------------------------- */
+  --frame: 1760px;
+  --gutter: clamp(20px, 5vw, 120px);
+  --column: calc(min(100vw, var(--frame)) - var(--gutter) * 2);
+
+  /* ----------------------------------------------------------------
+     TYPE SCALE — the two sizes every page hero is built from.
+
+     72 / 24 are the desktop values and they are reached at 1440, the
+     width the comps are drawn at. Below that both track the viewport
+     via clamp() rather than stepping at breakpoints, so there is no
+     jump at any width and no media query to keep in sync.
+
+     The floors matter as much as the ceilings: 36px is about the
+     largest a display line can be on a 375 screen before it wraps to
+     four lines, and 16px is the smallest body text should ever be.
+
+     5vw hits exactly 72px at 1440; 1.667vw hits exactly 24px there.
+     ---------------------------------------------------------------- */
+  --text-heading: clamp(2.25rem, 5vw, 4.5rem);      /* 36 -> 72  page hero H1 */
+  --text-subheading: clamp(1rem, 1.667vw, 1.5rem);  /* 16 -> 24  hero lead */
+  --text-section: clamp(2rem, 3.611vw, 3.25rem);    /* 32 -> 52  section H2 */
+  --text-title: clamp(1.25rem, 1.667vw, 1.5rem);    /* 20 -> 24  card/row titles */
+  --text-body: clamp(0.9375rem, 1.25vw, 1.125rem);  /* 15 -> 18  body copy */
+  --text-eyebrow: clamp(1rem, 1.528vw, 1.375rem);   /* 16 -> 22  eyebrow labels */
+
+  /* Vertical rhythm between sections — one value so every section
+     breathes the same amount instead of each choosing its own. */
+  --section-pad: clamp(64px, 8.333vw, 120px);
+
   --color-primary: #03CEB4;
   --color-secondary: #03CEB4;
   --color-tertiary: #03CEB4;
@@ -17,7 +76,7 @@
   --color-blacklight: #000101;
   --gradient-primary: linear-gradient(
     180deg, 
-    #011720 0%, 
+    #012532 0%, 
     #02534B 50%,
     #047D6B 75%,
     #02C5A5 100%
@@ -31,11 +90,54 @@
     #019980 50%,
     #021B23 100%
   );
+
+  /* The primary ramp, upside down: starts on the bright teal the hero
+     ends on and settles to near-black. One section painted with this
+     directly after the hero turns the old hard seam into a handoff. */
+  --gradient-primary-inverse: linear-gradient(
+    180deg,
+    #02C5A5 0%,
+    #047D6B 25%,
+    #02534B 50%,
+    #012532 100%
+  );
+
+  /* The calm field the middle of a page sits on — the hero's own dark
+     base, held flat. Flat rather than a fall because five adjacent
+     sections each restarting even a subtle gradient printed a faint
+     step at every boundary; one colour has no boundaries at all. It is
+     also the exact colour the inverse ramp ends on, so Impact hands
+     off to Overview with no visible step. */
+  --surface-quiet: #012532;
 }
+
+/* ------------------------------------------------------------------
+   ENTERPRISE BASELINE — interaction states the design system owes
+   every control, defined once.
+
+   :focus-visible only (not :focus) so mouse clicks stay clean while
+   keyboard navigation gets an unmissable ring. The teal matches the
+   brand accent; the offset keeps it legible on dark and light fields.
+   ------------------------------------------------------------------ */
+:focus-visible {
+  outline: 2px solid #2dfbd9;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: rgba(3, 206, 180, 0.35);
+  color: #ffffff;
+}
+
 
 body {
   color: white;
   font-family: var(--font-raleway);
+  /* The hero's dark base, so anything that ever shows through — a
+     late-loading section, overscroll, a route transition — is the
+     site's colour family rather than browser white. */
+  background: #012532;
 }
 
 .font-title {
@@ -46,12 +148,47 @@ body {
   font-family: var(--font-inter);
 }
 
+/* Hero and Impact are separate sections; the seam stays invisible
+   because the hero's ramp ENDS on the bright teal the inverse ramp
+   STARTS on — same colour on both sides of the boundary. */
 .hero {
   background: var(--gradient-primary);
-} 
+}
 
-.overview{
-  background:var(--color-darkblue);
+.impact {
+  background: var(--gradient-primary-inverse);
+}
+
+/* THE QUIET MIDDLE. Repeating the full ramp on every section gave the
+   page eight bright->dark seams. Enterprise pages hold a calm field
+   through the middle and spend the bright ramp where it earns
+   attention: the hero opens with it, the CTA brings it back. FAQ and
+   footer stay on their own near-black so the page lands, not glows. */
+.overview,
+.founder,
+.locations,
+.framework,
+.insights {
+  background: var(--surface-quiet);
+}
+
+/* The Our Industries frame (31:740) paints the full primary ramp —
+   the journey climbs from the page's dark base to the bright teal
+   horizon as the thread completes. */
+.industries {
+  background: var(--gradient-primary);
+}
+
+.about-cta {
+  background: var(--gradient-primary);
+}
+
+/* FAQ and footer sit on the same hero-family navy as the quiet middle
+   — the whole page below the hero holds one colour family, and pure
+   black read as a different site bolted onto the bottom. */
+.about-faq,
+.about-footer {
+  background: var(--surface-quiet);
 }
 
 /* About hero: two stacked gradients. The base sets the dark-to-teal
@@ -60,15 +197,11 @@ body {
 .about-hero {
   background: linear-gradient(
     180deg,
-    #011720 0%,
+    #012532 0%,
     #02534B 49.971%,
     #047D6B 74.981%,
     #0A7261 100%
   );
-}
-
-.about-origin {
-  background: var(--gradient-greenBrown);
 }
 
 .about-hero__wash {
@@ -118,3 +251,4 @@ body {
 .about-origin{
   background: var(--gradient-greenBlue);
 }
+

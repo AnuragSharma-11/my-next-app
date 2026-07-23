@@ -1,0 +1,25 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 537.987 1015.11" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Ellipse 991" filter="url(#filter0_if_0_34)">
+<ellipse cx="268.994" cy="507.555" rx="208.994" ry="447.555" fill="url(#paint0_linear_0_34)" fill-opacity="0.4"/>
+<path d="M268.993 60.5C326.396 60.5 378.519 110.345 416.321 191.297C454.104 272.208 477.487 384.022 477.487 507.555C477.487 631.087 454.104 742.901 416.321 823.812C378.519 904.764 326.396 954.609 268.993 954.609C211.591 954.609 159.468 904.764 121.666 823.812C83.883 742.901 60.5 631.087 60.5 507.555C60.5 384.022 83.883 272.208 121.666 191.297C159.468 110.345 211.591 60.5002 268.993 60.5Z" stroke="var(--stroke-0, #70F2DB)"/>
+</g>
+<defs>
+<filter id="filter0_if_0_34" x="0" y="0" width="537.987" height="1015.11" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feMorphology radius="6" operator="erode" in="SourceAlpha" result="effect1_innerShadow_0_34"/>
+<feOffset dx="20" dy="20"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.0288462 0 0 0 0 1 0 0 0 0 0.792618 0 0 0 1 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_0_34"/>
+<feGaussianBlur stdDeviation="30" result="effect2_foregroundBlur_0_34"/>
+</filter>
+<linearGradient id="paint0_linear_0_34" x1="476.669" y1="411.462" x2="64.4383" y2="420.225" gradientUnits="userSpaceOnUse">
+<stop stop-color="#7DE8DA"/>
+<stop offset="0.0895633" stop-color="#7BF3E3"/>
+<stop offset="0.75" stop-color="#68F3DF"/>
+<stop offset="1" stop-color="#8BFBEC"/>
+</linearGradient>
+</defs>
+</svg>

@@ -36,7 +36,16 @@ const ProductCard = ({
   return (
     <motion.article
       variants={variants}
-      className={`relative h-[259px] flex-[0_0_calc((100%-44px)/3)] overflow-hidden rounded-[26px] border border-solid border-[#01211d] bg-[#272727] ${
+      /* THE CARD IS ITS OWN CLIP BOX. Everything inside is placed against
+         a fixed 259px canvas and the artwork deliberately overhangs the
+         right edge, so overflow-hidden here is what stops that overhang
+         ever reaching the page — it must survive every breakpoint.
+
+         The basis steps 1 -> 2 -> 3 across the ladder. Three 385px cards
+         need ~1200px of column; at 768 the same split gives 110px cards,
+         which is narrower than the artwork's own left offset and leaves
+         the copy sitting under the photo. */
+      className={`relative h-[259px] flex-[0_0_100%] overflow-hidden rounded-[26px] border border-solid border-[#01211d] bg-[#272727] sm:flex-[0_0_calc((100%-22px)/2)] lg:flex-[0_0_calc((100%-44px)/3)] ${
         glow ? "shadow-[2px_3px_60px_0px_rgba(89,241,216,0.2)]" : ""
       }`}
     >

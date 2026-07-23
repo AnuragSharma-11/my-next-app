@@ -1,9 +1,9 @@
 "use client";
-import Image from "next/image";
-import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
 
 import caseStudyCover from "../assets/case-studies/case-study-cover.png";
+import Container from "../../components/Container";
+import InsightCard from "../../components/InsightCard";
 
 /* ------------------------------------------------------------------
    MOTION
@@ -41,10 +41,11 @@ const stage = {
 };
 
 const riseIn = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
   visible: {
     opacity: 1,
     y: 0,
+    filter: "blur(0px)",
     transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
   },
 };
@@ -66,47 +67,31 @@ const CASE_STUDIES = Array.from({ length: 10 }, (_, i) => ({
 
 const TRACK_DISTANCE = CASE_STUDIES.length * (CARD_WIDTH + CARD_GAP);
 
-/* CASE STUDY CARD — kept local rather than reaching for
-   blog/components/ArticleCard.jsx. That card is a photo-fill tile with
-   a frosted panel overlaid on its lower edge; this one is a column
-   with a fixed 320px photo above copy that sits on the card's own
-   translucent ground, at a different type scale. Bending ArticleCard
-   to cover both would mean a second layout mode behind a flag, which
-   is more coupling than either card saves. */
+/* CASE STUDY CARD — the shared InsightCard, pinned to the marquee's
+   fixed slot size. This card and the All Insights grid card are the
+   same design (photo above copy on a translucent ground); they differ
+   only in photo height, date size and whether the box is fixed, so all
+   three are props rather than a second implementation.
+
+   It is NOT ArticleCard: that one is a photo-FILL tile with a frosted
+   panel floating over its lower edge, which is a different composition
+   rather than a variant of this one.
+
+   sizes="264px" is the real painted width — the source is 450x600 and
+   would otherwise ship whole into every one of the twenty slots. */
 const CaseStudyCard = ({ study }) => (
-  <Link
+  <InsightCard
+    kicker={study.category}
+    date={study.date}
+    title={study.title}
     href={study.href}
-    className="flex h-[580px] w-[283.5px] shrink-0 flex-col gap-[12px] overflow-hidden rounded-[22px] bg-white/10 p-[10px]"
-  >
-    {/* The source is 450x600 but never painted wider than 263.5px, so
-        sizes carries the real painted width and next/image re-encodes
-        it down instead of shipping the full original to every slot. */}
-    <div className="relative h-[320px] w-full shrink-0 overflow-hidden rounded-[22px]">
-      <Image
-        src={study.image}
-        alt={study.imageAlt}
-        fill
-        sizes="264px"
-        className="object-cover"
-        placeholder="blur"
-      />
-    </div>
-
-    <div className="flex w-full flex-col gap-[16px] px-[6px] leading-[1.5] [word-break:break-word]">
-      <div className="flex w-full items-center justify-between whitespace-nowrap font-medium text-[#e3e3e3]">
-        <p className="text-[20px] tracking-[-0.4px]">{study.category}</p>
-        <p className="text-[14px] tracking-[-0.28px]">{study.date}</p>
-      </div>
-
-      <p className="w-full text-[20px] font-semibold tracking-[-0.4px] text-white">
-        {study.title}
-      </p>
-
-      <p className="w-full text-right text-[22px] font-semibold tracking-[-0.44px] text-[#2dfbd9]">
-        Learn More
-      </p>
-    </div>
-  </Link>
+    image={study.image}
+    imageAlt={study.imageAlt}
+    imageSizes="264px"
+    photoHeight={320}
+    dateSize={14}
+    className="h-[580px] w-[283.5px] shrink-0"
+  />
 );
 
 /* MARQUEE ROW — `reverse` starts the track already shifted one set
@@ -151,9 +136,10 @@ const Blog_CaseStudies = () => {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="blog-case-studies relative w-full">
-      <motion.div
-        className="relative z-10 mx-auto flex w-[1200px] max-w-full flex-col gap-[80px] px-[120px] xl:px-0"
+    <section className="blog-case-studies relative w-full pb-[180px]">
+      <Container
+        as={motion.div}
+        className="relative z-10 flex flex-col gap-[80px]"
         variants={stage}
         initial="hidden"
         whileInView="visible"
@@ -163,7 +149,7 @@ const Blog_CaseStudies = () => {
         <div className="flex w-full items-center justify-between">
           <motion.h2
             variants={riseIn}
-            className="whitespace-nowrap text-[52px] font-normal leading-[1.2] text-[#1ef4d1] [word-break:break-word]"
+            className="whitespace-nowrap text-[34px] font-normal leading-[1.2] text-[#1ef4d1] [word-break:break-word] md:text-[42px] lg:text-[52px]"
           >
             Case Studies
           </motion.h2>
@@ -179,7 +165,7 @@ const Blog_CaseStudies = () => {
           <MarqueeRow duration={50} paused={reduceMotion} />
           <MarqueeRow reverse duration={62} paused={reduceMotion} />
         </div>
-      </motion.div>
+      </Container>
     </section>
   );
 };

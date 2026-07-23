@@ -10,7 +10,6 @@ import {
   NewTwitterIcon,
 } from "@hugeicons/core-free-icons";
 
-import Navbar from "../../components/Navbar";
 
 import beamWide from "../assets/product-hero/beam-wide.svg";
 import beamNarrow from "../assets/product-hero/beam-narrow.svg";
@@ -34,8 +33,9 @@ import arrow from "../assets/product-hero/arrow-right.svg";
 
    Only the right-hand artwork lives in here. The copy on the left stays
    in normal flow with percentage margins, because scaling the stage
-   would scale the headline too and 62px type has no business growing to
-   90px on a tall monitor.
+   would scale the headline too — and the headline's size is the shared
+   --text-heading token, which is meant to answer to viewport WIDTH, not
+   to how tall someone's monitor happens to be.
    ------------------------------------------------------------------ */
 const FRAME_W = 1440;
 const FRAME_H = 946;
@@ -63,15 +63,26 @@ const BEAMS = [
   { src: beamNarrow, x: 860 - BEAM_PAD, y: -26 - BEAM_PAD, w: 528, h: 1103 },
 ];
 
-/* Swirl behind the pills: a 1254x1254 PNG the comp draws at 429px and
-   turns -16.93deg. next/image serves it down rather than shipping the
-   full raster for a third of its size. Positioned by CENTRE because the
-   rotation is about the centre — anchoring by corner would swing it. */
-const SWIRL = { size: 429.188, cx: 1052.78, cy: 747.62, rotate: -16.93 };
+/* Swirl: a 1254x1254 PNG the comp draws at 429px and turns -16.93deg.
+   Positioned by CENTRE because the rotation is about the centre —
+   anchoring by corner would swing it.
 
-/* Cursor glyph, 41.46x41.45 per its viewBox, rotated -25.37deg. Same
-   centre-anchoring reason as the swirl. */
-const CURSOR = { w: 41.4628, h: 41.447, cx: 996.97, cy: 726.97, rotate: -25.37 };
+   Figma reports node 1:3802 as 535.563 square at (785, 604.81). That is
+   the AXIS-ALIGNED BOUNDING BOX of the rotated square, not the square:
+   535.563 / (cos16.93 + sin16.93) = 429.188 gives the real side, and the
+   box's own centre (1052.78, 872.59) is where it belongs.
+
+   IT RENDERS BELOW THE BEAMS. In Figma it is the FIRST child of
+   1:3801, i.e. the bottom of the stack, with both beam vectors painted
+   over it — which is exactly why it reads as faint arcs in the comp
+   rather than a solid orb. Drawn on top instead, it dominates the whole
+   right-hand side and the beam disappears behind it. */
+const SWIRL = { size: 429.188, cx: 1052.78, cy: 872.59, rotate: -16.93 };
+
+/* Cursor glyph. Same AABB correction: Figma's Polygon 1 is 55.945
+   square at (969, 716.996), which for a 41.46 square turned -25.37deg
+   resolves to a centre of (996.97, 744.97). */
+const CURSOR = { w: 41.4628, h: 41.447, cx: 996.97, cy: 744.97, rotate: -25.37 };
 
 /* ------------------------------------------------------------------
    PRODUCT PILLS
@@ -116,10 +127,11 @@ const stage = {
 };
 
 const riseIn = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 24, filter: "blur(6px)" },
   visible: {
     opacity: 1,
     y: 0,
+    filter: "blur(0px)",
     transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
   },
 };
@@ -140,13 +152,12 @@ const Product_Hero = () => {
 
   return (
     <section
-      className="product-hero relative h-screen w-full overflow-hidden"
+      className="product-hero relative min-h-screen w-full overflow-hidden lg:h-screen lg:min-h-0"
       style={{
         backgroundImage:
-          "linear-gradient(180deg, #011720 0%, #02534B 49.971%, #047D6B 74.981%, #02C5A5 100%)",
+          "linear-gradient(180deg, #012532 0%, #02534B 49.971%, #047D6B 74.981%, #02C5A5 100%)",
       }}
     >
-      <Navbar />
 
       {/* LIGHT BEAM STAGE — scaled from the top-right so the beam always
           reaches the top of the viewport and the pills ride with it.
@@ -154,25 +165,20 @@ const Product_Hero = () => {
           column on narrow viewports and must never eat those clicks. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute right-0 top-0 origin-top-right"
+        /* HIDDEN BELOW lg, NOT SCALED FURTHER. The stage is a rigid
+           1440x946 composition scaled by viewport HEIGHT, so on a phone
+           it is still ~1440 CSS px wide sitting off to the right — it
+           cannot be made to share a 375px screen with the copy without
+           shrinking the pill labels past legibility. Artwork is the
+           thing that gives way when space runs out, not the copy. The
+           whole comp returns intact at lg. */
+        className="pointer-events-none absolute right-0 top-0 hidden origin-top-right lg:block"
         style={{
           width: FRAME_W,
           height: FRAME_H,
           transform: `scale(${scale})`,
         }}
       >
-        {/* BEAMS — two overlapping cones, the narrow one riding inside the
-            wide one to give the core its hotter centre. */}
-        {BEAMS.map((beam) => (
-          <img
-            key={beam.src.src}
-            src={beam.src.src}
-            alt=""
-            className="absolute"
-            style={{ left: beam.x, top: beam.y, width: beam.w, height: beam.h }}
-          />
-        ))}
-
         {/* SWIRL — the soft concentric arcs the pills sit on top of.
             It turns very slowly so the cluster reads as suspended in
             something moving rather than pinned to a still backdrop. */}
@@ -196,6 +202,18 @@ const Product_Hero = () => {
             className="h-full w-full object-cover"
           />
         </motion.div>
+
+        {/* BEAMS — two overlapping cones, the narrow one riding inside the
+            wide one to give the core its hotter centre. */}
+        {BEAMS.map((beam) => (
+          <img
+            key={beam.src.src}
+            src={beam.src.src}
+            alt=""
+            className="absolute"
+            style={{ left: beam.x, top: beam.y, width: beam.w, height: beam.h }}
+          />
+        ))}
 
         {/* PRODUCT PILLS — the outer div holds the static placement so
             the inner motion element is free to own transform outright;
@@ -289,11 +307,16 @@ const Product_Hero = () => {
         {/* HEADING + BODY — Figma's 120px left inset is 8.333% of the 1440
             frame, so it tracks the viewport instead of hugging the edge on
             wide displays. The stack's own 161px top is 17.02% of 946. */}
-        <div className="absolute left-[8.333%] top-[17.02%] flex w-[658px] max-w-[45.7%] flex-col gap-[60px]">
+        {/* Below lg this is normal flow inside the section's own gutter:
+            the comp's 45.7% cap exists only because the beam occupies the
+            right half, and with the beam hidden that cap would leave the
+            headline 171px wide on a phone. Absolute placement and the
+            comp's literal percentages resume at lg. */}
+        <div className="flex w-full flex-col gap-[36px] px-[var(--gutter)] pb-[120px] pt-[140px] lg:absolute lg:left-[8.333%] lg:top-[17.02%] lg:w-[658px] lg:max-w-[45.7%] lg:gap-[60px] lg:p-0">
           <div className="flex flex-col gap-[24px]">
             <motion.h1
               variants={riseIn}
-              className="text-[62px] font-normal leading-[1.2] text-white"
+              className="text-[length:var(--text-heading)] font-normal leading-[1.2] text-white"
             >
               We build
               <br />
@@ -304,7 +327,7 @@ const Product_Hero = () => {
 
             <motion.p
               variants={riseIn}
-              className="max-w-[624px] text-[20px] font-medium leading-[1.5] tracking-[-0.4px] text-[#e3e3e3]"
+              className="max-w-[624px] text-[length:var(--text-subheading)] font-medium leading-[1.5] tracking-[-0.4px] text-[#e3e3e3]"
             >
               Our products are built on a shared foundation of AI, designed to
               solve complex problems, power industries, and create meaningful
@@ -318,7 +341,7 @@ const Product_Hero = () => {
           <motion.a
             variants={riseIn}
             href="#products"
-            className="group flex h-[50px] w-[240px] items-center justify-center gap-[8px] rounded-[1200px] border border-solid border-white transition-colors duration-300 hover:bg-white/10"
+            className="group flex h-[50px] w-[240px] max-w-full items-center justify-center gap-[8px] rounded-[1200px] border border-solid border-white transition-colors duration-300 hover:bg-white/10"
           >
             <span className="text-[20px] font-semibold leading-none tracking-[-0.4px] text-white">
               Scroll down
@@ -343,7 +366,7 @@ const Product_Hero = () => {
             glyph, which is p-[8px] around a size-20 icon. */}
         <motion.div
           variants={riseIn}
-          className="absolute bottom-[50px] left-[8.333%] flex items-center gap-[10px]"
+          className="absolute bottom-[50px] left-[var(--gutter)] flex items-center gap-[10px] lg:left-[8.333%]"
         >
           {[
             { icon: Facebook02Icon, href: "https://www.facebook.com/aashita.ai/", label: "Facebook" },

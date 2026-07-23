@@ -1,10 +1,9 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "motion/react";
 
 import earthHorizon from "./assets/cta/earth-horizon.png";
-import arrow from "./assets/cta/arrow-right.svg";
+import PillButton from "./PillButton";
 
 /* ------------------------------------------------------------------
    MOTION
@@ -25,17 +24,37 @@ const stage = {
 };
 
 const riseIn = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
   visible: {
     opacity: 1,
     y: 0,
+    filter: "blur(0px)",
     transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
-const Cta = () => {
+/* ------------------------------------------------------------------
+   ONE CTA, DIFFERENT WORDS
+
+   About (1:4830) and Blog (1:4640) are the SAME frame — same 506px
+   height, same three backdrop layers, same 260x50 glass pill, right
+   down to the gradient label parked 49px below centre. Only the
+   heading, body and button label differ, and Blog points at a
+   newsletter rather than a contact form.
+
+   So the copy is props with About's wording as the default: existing
+   call sites keep working untouched, and Blog passes its three strings.
+   Forking the component would have duplicated the whole backdrop stack
+   to change three lines of text.
+   ------------------------------------------------------------------ */
+const Cta = ({
+  heading = "Ready to build what’s next ?",
+  body = "From the first idea to real-world scale, we bring AI, design, technology and execution together to build products that create meaningful impact.",
+  buttonLabel = "Start a Conversation",
+  href = "/contact-us",
+}) => {
   return (
-    <section className="about-cta relative h-[506px] w-full overflow-hidden drop-shadow-[0px_4px_2px_rgba(0,0,0,0.25)]">
+    <section className="about-cta relative min-h-[506px] w-full overflow-hidden drop-shadow-[0px_4px_2px_rgba(0,0,0,0.25)]">
       {/* BACKDROP — three stacked layers, in Figma's own order.
           The gradient is the base colour: the earth photo only sits at
           60% opacity, so the deep teal below it is what actually sets
@@ -44,8 +63,7 @@ const Cta = () => {
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
-          backgroundImage:
-            "linear-gradient(180deg, rgb(1,23,32) 0%, rgb(2,83,75) 49.971%, rgb(4,125,107) 74.981%, rgb(2,197,165) 100%)",
+          backgroundImage: "var(--gradient-primary)",
         }}
       />
       {/* The source is 2233x704 but never shown above 1440 wide, so
@@ -74,7 +92,10 @@ const Cta = () => {
           flowing it, so the copy stays optically centred on the
           horizon line no matter how tall the section renders. */}
       <motion.div
-        className="absolute left-1/2 top-1/2 flex w-[699px] max-w-full -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-[60px] px-[20px]"
+        /* 715px is the comp's own heading width (node 1:4644). At 699
+           minus 20px of padding the heading had 659px to work with and
+           broke "Next ?" onto a second line on every page. */
+        className="relative mx-auto flex w-[715px] max-w-[calc(100%-40px)] flex-col items-center gap-[32px] py-[80px] lg:absolute lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 lg:gap-[60px] lg:py-0"
         variants={stage}
         initial="hidden"
         whileInView="visible"
@@ -83,61 +104,39 @@ const Cta = () => {
         <div className="flex w-full flex-col items-center gap-[32px] capitalize text-white">
           <motion.h2
             variants={riseIn}
-            className="w-full text-center text-[52px] font-medium leading-[1.2]"
+            className="w-full text-center text-[var(--text-section)] font-medium leading-[1.2]"
           >
-            Ready to build what&rsquo;s next ?
+            {heading}
           </motion.h2>
 
           <motion.p
             variants={riseIn}
-            className="w-[626px] max-w-full text-center text-[20px] font-medium leading-[1.7] tracking-[-0.4px]"
+            className="w-[626px] max-w-full text-center text-[var(--text-subheading)] font-medium leading-[1.7] tracking-[-0.4px]"
           >
-            From the first idea to real-world scale, we bring AI, design,
-            technology and execution together to build products that create
-            meaningful impact.
+            {body}
           </motion.p>
         </div>
 
-        {/* BUTTON — deliberately not Primarybtn: that one is a 344px
-            outline pill at 24px with a leading arrow, this is a 260px
-            glass pill at 20px with a trailing down-arrow.
+        {/* BUTTON — the shared PillButton, which is this exact control:
+            an outlined pill with a second, gradient-filled copy of the
+            label parked 49px below centre inside an overflow-clip box,
+            both sliding together on hover.
 
-            Figma parks a second, gradient-filled copy of the label 49px
-            below centre inside an overflow-clip pill. That is a hover
-            state stored in place, so the two labels swap by sliding
-            together — the clip is what hides the spare one at rest. */}
+            This section is where that construction was first decoded,
+            and it then turned up on the home hero, the product hero and
+            the locations band — so it moved into a component. `arrowDown`
+            reproduces the 90deg rotation Figma applies here only.
+
+            Still deliberately not Primarybtn: that is a 344px outline
+            pill at 24px with a LEADING arrow and no hover state. */}
         <motion.div variants={riseIn}>
-          <Link
-            href="/contact-us"
-            className="group relative block h-[50px] w-[260px] overflow-clip rounded-[1200px] border border-white bg-white/10 backdrop-blur-[1px]"
-          >
-            <span className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-[8px] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-[calc(50%+49px)]">
-              <span className="whitespace-nowrap text-[20px] font-semibold leading-none tracking-[-0.4px] text-white">
-                Start a Conversation
-              </span>
-              {/* The export is 16x12 with preserveAspectRatio="none", so
-                  both dimensions must be pinned or it stretches to its
-                  box. Figma rotates it 90deg to point down. */}
-              <span className="flex h-[16px] w-[12px] items-center justify-center">
-                <img
-                  src={arrow.src}
-                  alt=""
-                  className="h-[12px] w-[16px] rotate-90"
-                />
-              </span>
-            </span>
-
-            <span className="absolute left-[calc(50%+1px)] top-[calc(50%+49px)] flex h-[50px] w-[240px] -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-[8px] rounded-[1200px] bg-gradient-to-r from-[#029c88] to-[#1b6d57] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-[calc(50%+49px)]">
-              <span className="whitespace-nowrap text-[20px] font-semibold leading-none tracking-[-0.4px] text-white">
-                How we do it
-              </span>
-              <img
-                src={arrow.src}
-                alt=""
-                className="h-[12px] w-[16px] shrink-0"
-              />
-            </span>
-          </Link>
+          <PillButton
+            label={buttonLabel}
+            href={href}
+            width={260}
+            arrowDown
+            className="bg-white/10 backdrop-blur-[1px]"
+          />
         </motion.div>
       </motion.div>
     </section>

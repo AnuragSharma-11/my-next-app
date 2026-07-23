@@ -5,6 +5,7 @@ import ArticleCard from "../components/ArticleCard";
 
 import featuredTeamWorkspace from "../assets/featured-insights/featured-team-workspace.png";
 import insightAnalystScreens from "../assets/featured-insights/insight-analyst-screens.png";
+import Container from "../../components/Container";
 
 /* ------------------------------------------------------------------
    MOTION
@@ -26,10 +27,11 @@ const stage = {
 };
 
 const riseIn = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
   visible: {
     opacity: 1,
     y: 0,
+    filter: "blur(0px)",
     transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
   },
 };
@@ -84,9 +86,9 @@ const Blog_FeaturedInsights = () => {
   const [featured, ...stacked] = ARTICLES;
 
   return (
-    <section className="blog-featured-insights relative w-full">
-      <motion.div
-        className="relative z-10 mx-auto flex w-[1200px] max-w-full flex-col gap-[80px] px-[120px] xl:px-0"
+    <section className="blog-featured-insights relative w-full pb-[120px]">
+      <Container as={motion.div}
+        className="relative z-10 flex flex-col gap-[80px]"
         variants={stage}
         initial="hidden"
         whileInView="visible"
@@ -96,14 +98,14 @@ const Blog_FeaturedInsights = () => {
         <div className="flex flex-col gap-[24px] [word-break:break-word]">
           <motion.h2
             variants={riseIn}
-            className="text-[52px] font-normal leading-[1.2] text-[#1ef4d1]"
+            className="text-[34px] font-normal leading-[1.2] text-[#1ef4d1] md:text-[42px] lg:text-[52px]"
           >
             Featured Insights
           </motion.h2>
 
           <motion.p
             variants={riseIn}
-            className="w-[456px] max-w-full text-[22px] font-medium leading-[1.5] tracking-[-0.44px] text-[#e3e3e3]"
+            className="w-[456px] max-w-full text-[18px] font-medium leading-[1.5] tracking-[-0.44px] text-[#e3e3e3] lg:text-[22px]"
           >
             Explore stories that show how bold ideas become business
             breakthroughs.
@@ -116,28 +118,33 @@ const Blog_FeaturedInsights = () => {
             hard-coding 758 anywhere. min-w-px stops the long headline
             inside the featured card from forcing the flex item wider
             than its share. */}
-        <div className="flex h-[562px] w-full items-stretch gap-[22px]">
+        {/* Below lg the 758+420 split has nowhere to go — 420px alone is
+            wider than a 375px screen minus its gutter — so the band
+            becomes one column and the fixed 562px band height gives way
+            to per-card aspect ratios. The comp's geometry is restored
+            verbatim at lg. */}
+        <div className="flex w-full flex-col items-stretch gap-[22px] lg:h-[562px] lg:flex-row">
           <ArticleCard
             {...featured}
-            className="min-w-px flex-1"
+            className="aspect-[758/562] min-w-px lg:aspect-auto lg:flex-1"
             variants={riseIn}
           />
 
           {/* STACKED COLUMN — two equal cards, so basis-0 + flex-1
               splits the 562px minus the gutter rather than repeating a
               270px literal on each. */}
-          <div className="flex w-[420px] shrink-0 flex-col gap-[22px]">
+          <div className="flex w-full flex-col gap-[22px] sm:flex-row lg:w-[420px] lg:shrink-0 lg:flex-col">
             {stacked.map((article) => (
               <ArticleCard
                 key={article.id}
                 {...article}
-                className="min-h-px flex-1 basis-0"
+                className="aspect-[420/270] min-h-px sm:flex-1 lg:aspect-auto lg:basis-0"
                 variants={riseIn}
               />
             ))}
           </div>
         </div>
-      </motion.div>
+      </Container>
     </section>
   );
 };

@@ -13,6 +13,8 @@ import glowEllipse from "../assets/product-grid/glow-ellipse.svg";
 import iconCard from "../assets/product-grid/icon-card.svg";
 import cardBlob from "../assets/product-grid/card-blob.svg";
 import dot from "../assets/product-grid/dot.svg";
+import Container from "../../components/Container";
+import Eyebrow from "../../components/Eyebrow";
 
 /* ------------------------------------------------------------------
    MOTION
@@ -33,10 +35,11 @@ const stage = {
 };
 
 const riseIn = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
   visible: {
     opacity: 1,
     y: 0,
+    filter: "blur(0px)",
     transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
   },
 };
@@ -160,8 +163,8 @@ const Product_Grid = () => {
         </div>
       </div>
 
-      <motion.div
-        className="relative z-10 mx-auto w-[1440px] max-w-full px-[120px] pb-[116px] pt-[90px]"
+      <Container as={motion.div}
+        className="relative z-10 pb-[116px] pt-[90px]"
         variants={stage}
         initial="hidden"
         whileInView="visible"
@@ -170,11 +173,14 @@ const Product_Grid = () => {
         {/* HEADING ROW — display type and intro on the left, eyebrow
             pinned top-right. items-start keeps the eyebrow on the
             heading's first baseline regardless of how the copy wraps. */}
-        <div className="flex w-full items-start gap-[16px]">
+        {/* Stacks below lg: the eyebrow is a nowrap 20-character label
+            and side by side with a 52px heading it squeezed the copy
+            column to nothing. Row layout is restored at lg. */}
+        <div className="flex w-full flex-col items-start gap-[24px] lg:flex-row lg:gap-[16px]">
           <div className="flex min-w-px flex-1 flex-col gap-[24px] [word-break:break-word]">
             <motion.h2
               variants={riseIn}
-              className="w-[623px] max-w-full text-[52px] font-normal leading-[1.2] text-white"
+              className="w-[623px] max-w-full text-[34px] font-normal leading-[1.2] text-white md:text-[42px] lg:text-[52px]"
             >
               Every Product Solves
               <br />A Different Challenge
@@ -182,7 +188,7 @@ const Product_Grid = () => {
 
             <motion.p
               variants={riseIn}
-              className="w-[525px] max-w-full text-[22px] font-medium leading-[1.5] tracking-[-0.44px] text-[#e3e3e3]"
+              className="w-[525px] max-w-full text-[18px] font-medium leading-[1.5] tracking-[-0.44px] text-[#e3e3e3] lg:text-[22px]"
             >
               From education to enterprise, our products solve real-world
               challenges with intelligent solutions.
@@ -193,10 +199,11 @@ const Product_Grid = () => {
             variants={riseIn}
             className="flex shrink-0 items-center gap-[16px]"
           >
-            <span className="h-[4px] w-[22px] shrink-0 bg-[#e3e3e3]" />
-            <p className="whitespace-nowrap text-[22px] font-semibold leading-[1.5] tracking-[-0.44px] text-[#0cffd7]">
-              EXPLORE OUR PRODUCTS
-            </p>
+            <Eyebrow
+              label="EXPLORE OUR PRODUCTS"
+              color="#0cffd7"
+              barColor="#e3e3e3"
+            />
           </motion.div>
         </div>
 
@@ -205,7 +212,7 @@ const Product_Grid = () => {
             fixed height, so there is no row sizing left for grid to
             solve, and wrapping degrades more gracefully if the viewport
             cannot hold three across. */}
-        <div className="mt-[160px] flex w-full flex-wrap gap-[22px]">
+        <div className="mt-[64px] flex w-full flex-wrap gap-[22px] lg:mt-[160px]">
           {PRODUCTS.map((product) => (
             <ProductCard
               key={product.title}
@@ -217,7 +224,7 @@ const Product_Grid = () => {
             />
           ))}
         </div>
-      </motion.div>
+      </Container>
     </section>
   );
 };

@@ -1,13 +1,13 @@
 "use client";
 import { useMemo, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon, FilterMailIcon } from "@hugeicons/core-free-icons";
 
 import insightStrategyWall from "../assets/all-insights/insight-strategy-wall.png";
 import insightTeamWorkspace from "../assets/all-insights/insight-team-workspace.png";
+import Container from "../../components/Container";
+import InsightCard from "../../components/InsightCard";
 
 /* ------------------------------------------------------------------
    CATEGORIES
@@ -19,9 +19,14 @@ import insightTeamWorkspace from "../assets/all-insights/insight-team-workspace.
    nobody can tell which one is wrong later.
 
    There is no "All" tab in the comp. The first tab ships pre-selected
-   (Figma names that frame "Filter-Active-Tab"), so the grid is always
-   filtered — never showing everything at once. Adding an "All" tab
-   would be inventing UI the designer did not draw.
+   (Figma names that frame "Filter-Active-Tab") and the comp still shows
+   ALL SIX cards beneath it — so in the design the first tab is the
+   unfiltered view, not a filter that happens to match everything.
+
+   That matters: treating it as a real filter dropped the default page
+   to two cards and collapsed the grid from two rows to one, which is
+   why the page rendered ~830px shorter than the artboard. The first
+   tab now shows everything, matching the comp; the other three filter.
    ------------------------------------------------------------------ */
 
 const CATEGORIES = [
@@ -137,7 +142,9 @@ const Blog_AllInsights = () => {
     const needle = query.trim().toLowerCase();
 
     return ARTICLES.filter((article) => {
-      const inCategory = article.category === activeCategory;
+      // First tab is the unfiltered view — see the CATEGORIES note.
+      const inCategory =
+        activeCategory === CATEGORIES[0] || article.category === activeCategory;
       const matchesQuery =
         needle === "" || article.title.toLowerCase().includes(needle);
 
@@ -146,11 +153,11 @@ const Blog_AllInsights = () => {
   }, [activeCategory, query]);
 
   return (
-    <section className="blog-all-insights relative w-full">
-      <div className="mx-auto flex w-full max-w-[1440px] flex-col px-[120px]">
+    <section className="blog-all-insights relative w-full pb-[120px]">
+      <Container className="flex flex-col">
         {/* HEADING AND SEARCH */}
         <div className="flex w-full flex-wrap items-center justify-between gap-[24px]">
-          <h2 className="text-[52px] font-normal leading-[1.2] text-[#1ef4d1]">
+          <h2 className="text-[34px] font-normal leading-[1.2] text-[#1ef4d1] md:text-[42px] lg:text-[52px]">
             All Insights
           </h2>
 
@@ -161,10 +168,15 @@ const Blog_AllInsights = () => {
               placeholder, so the accessible name is carried by an
               sr-only span instead — a placeholder alone disappears the
               moment someone types. */}
-          <label className="flex h-[66px] w-[626px] max-w-full cursor-text items-center justify-between gap-[10px] rounded-full border border-solid border-[rgba(255,255,255,0.4)] bg-[rgba(255,255,255,0.1)] px-[20px]">
+          {/* w-full below lg so the pill spans the column instead of
+              sitting at a 626px literal that max-w-full merely clamps —
+              the comp's 626px returns at lg. min-w-px on the inner group
+              is what lets the input shrink rather than force the pill
+              wider than its shell. */}
+          <label className="flex h-[56px] w-full max-w-full cursor-text items-center justify-between gap-[10px] rounded-full border border-solid border-[rgba(255,255,255,0.4)] bg-[rgba(255,255,255,0.1)] px-[20px] lg:h-[66px] lg:w-[626px]">
             <span className="sr-only">Search articles</span>
 
-            <span className="flex items-center gap-[10px]">
+            <span className="flex min-w-px flex-1 items-center gap-[10px]">
               {/* Figma's export is literally named `search-01-stroke-
                   rounded`, and its path data is byte-identical to
                   HugeIcons' Search01Icon — same 24px viewBox, same two
@@ -184,7 +196,7 @@ const Blog_AllInsights = () => {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search articles"
-                className="w-full bg-transparent text-[22px] font-medium leading-[1.5] tracking-[-0.44px] text-[#e3e3e3] outline-none placeholder:text-[#e3e3e3] [&::-webkit-search-cancel-button]:appearance-none"
+                className="w-full min-w-px bg-transparent text-[17px] lg:text-[22px] font-medium leading-[1.5] tracking-[-0.44px] text-[#e3e3e3] outline-none placeholder:text-[#e3e3e3] [&::-webkit-search-cancel-button]:appearance-none"
               />
             </span>
 
@@ -217,7 +229,13 @@ const Blog_AllInsights = () => {
         <div
           role="tablist"
           aria-label="Filter insights by category"
-          className="mt-[80px] inline-flex w-fit max-w-full flex-wrap items-center gap-[20px] rounded-full border border-solid border-[rgba(255,255,255,0.2)] bg-[rgba(255,255,255,0.1)] px-[7px] py-[7px] backdrop-blur-[5px]"
+          /* Below lg the four pills cannot sit on one line and wrapping
+             them inside a rounded-full shell turns the strip into a
+             lozenge stack. A horizontal scroller keeps the row reading
+             as a row; the overflow is SCOPED to this element, so the
+             page itself still never scrolls sideways. From lg the pills
+             fit and the strip goes back to the comp's single row. */
+          className="mt-[48px] flex w-full max-w-full items-center gap-[12px] overflow-x-auto rounded-[33px] border border-solid border-[rgba(255,255,255,0.2)] bg-[rgba(255,255,255,0.1)] px-[7px] py-[7px] backdrop-blur-[5px] [scrollbar-width:none] xl:mt-[80px] xl:inline-flex xl:w-fit xl:gap-[20px] xl:overflow-visible xl:rounded-full"
         >
           {CATEGORIES.map((category) => {
             const isActive = category === activeCategory;
@@ -229,7 +247,7 @@ const Blog_AllInsights = () => {
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => setActiveCategory(category)}
-                className={`relative flex h-[60px] cursor-pointer items-center justify-center whitespace-nowrap rounded-full px-[20px] text-[22px] font-bold leading-[1.5] tracking-[-0.44px] transition-colors duration-200 ${
+                className={`relative flex h-[48px] shrink-0 cursor-pointer items-center justify-center whitespace-nowrap rounded-full px-[16px] text-[16px] font-bold leading-[1.5] tracking-[-0.44px] transition-colors duration-200 xl:h-[60px] xl:px-[20px] xl:text-[22px] ${
                   isActive ? "text-white" : "text-[#e3e3e3]"
                 }`}
               >
@@ -294,47 +312,25 @@ const Blog_AllInsights = () => {
                   duration: 0.28,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="flex flex-col gap-[16px] overflow-hidden rounded-[22px] bg-[rgba(255,255,255,0.1)] px-[10px] pb-[20px] pt-[10px]"
               >
-                {/* The whole card is one link. Nesting a second link on
-                    "Learn More" would produce two tab stops pointing at
-                    the same place, so that line is styled text inside
-                    this anchor rather than a separate control. */}
-                <Link href={ARTICLE_HREF} className="flex flex-col gap-[16px]">
-                  {/* #111 underneath the photo matches Figma's own
-                      fallback fill, so the rounded frame reads as
-                      intentional while the image decodes. */}
-                  <div className="relative h-[240px] w-full overflow-hidden rounded-[22px] bg-[#111]">
-                    <Image
-                      src={article.image}
-                      alt={article.imageAlt}
-                      fill
-                      sizes={CARD_IMAGE_SIZES}
-                      className="object-cover"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-[20px] px-[6px] [word-break:break-word]">
-                    <div className="flex items-center justify-between whitespace-nowrap text-[20px] font-medium leading-[1.5] tracking-[-0.4px] text-[#e3e3e3]">
-                      <span>{article.kicker}</span>
-                      {/* A machine-readable date sits alongside the
-                          comp's display string so the markup carries a
-                          real timestamp even while the copy is
-                          placeholder. */}
-                      <time dateTime="2026-06-08" className="text-right">
-                        {article.date}
-                      </time>
-                    </div>
-
-                    <h3 className="text-[20px] font-semibold leading-[1.5] tracking-[-0.4px] text-white">
-                      {article.title}
-                    </h3>
-
-                    <p className="text-right text-[22px] font-semibold leading-[1.5] tracking-[-0.44px] text-[#2dfbd9]">
-                      Learn More
-                    </p>
-                  </div>
-                </Link>
+                {/* The shared card. This grid and the Case Studies
+                    marquee are the same design — photo above copy on a
+                    translucent ground — so the markup lives in one
+                    place and the two differ only by props. motion.article
+                    stays the wrapper because `layout` has to be on the
+                    element the grid actually positions. */}
+                <InsightCard
+                  kicker={article.kicker}
+                  date={article.date}
+                  title={article.title}
+                  href={ARTICLE_HREF}
+                  image={article.image}
+                  imageAlt={article.imageAlt}
+                  imageSizes={CARD_IMAGE_SIZES}
+                  photoHeight={240}
+                  dateSize={20}
+                  className="h-full"
+                />
               </motion.article>
             ))}
           </AnimatePresence>
@@ -352,7 +348,7 @@ const Blog_AllInsights = () => {
             No insights match that search in {activeCategory}.
           </p>
         )}
-      </div>
+      </Container>
     </section>
   );
 };

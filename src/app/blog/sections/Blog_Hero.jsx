@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "motion/react";
 import Navbar from "../../components/Navbar";
+import Container from "../../components/Container";
 
 /* ------------------------------------------------------------------
    The decorative field that sits behind this hero is NOT owned here.
@@ -40,55 +41,73 @@ const stage = {
 };
 
 const riseIn = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 24, filter: "blur(6px)" },
   visible: {
     opacity: 1,
     y: 0,
+    filter: "blur(0px)",
     transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
 const Blog_Hero = () => {
   return (
-    <section className="blog-hero relative w-full pb-[120px] pt-[170px]">
-      {/* NAV — reused from the shared component. It positions itself
-          absolutely at z-50, so it sits outside the stagger rather than
-          fighting the copy stack for flow position. */}
-      <Navbar />
+    /* The 120px inset is the comp's gutter, but hardcoding it here meant
+       a 375px phone kept 240px of padding and left 135px for an 82px
+       headline. px-[var(--gutter)] rides the one responsive ladder in
+       globals.css and still resolves to 120px from 1280 up.
+
+       h-[755px] is the comp's frame height; below lg the copy is taller
+       relative to the box, so the height becomes a MINIMUM and the
+       section grows rather than letting the stack spill out the bottom. */
+    <section className="blog-hero relative flex min-h-[560px] w-full overflow-hidden pb-[80px] lg:h-[755px] lg:min-h-0 lg:pb-0">
 
       {/* HEADING STACK — Figma pins it at x=120, y=170 on a 1440 frame.
           px-[120px] reproduces the gutter without hardcoding a width,
           so it still holds together below 1440. */}
-      <motion.div
-        className="relative z-10 flex w-full flex-col items-start justify-center gap-[32px] px-[120px]"
+      <Container
+        as={motion.div}
+        /* Figma pins this stack at y=170, not centred in the hero — the
+           orb behind it is composed around copy sitting high in the
+           frame, so centring it drops the text into the bright part of
+           the glow and loses contrast. */
+        className="relative z-10 flex w-full flex-col items-start justify-start gap-[24px] pt-[130px] lg:gap-[32px] lg:pt-[170px]"
         variants={stage}
         initial="hidden"
         animate="visible"
       >
         <motion.h1
           variants={riseIn}
-          className="w-[587px] max-w-full text-[82px] font-normal leading-[1.2] text-[#1ef4d1]"
+          /* Size comes from the shared --text-heading token. That caps
+             this at 72px rather than the comp's 82 — the client set 72
+             as the one page-hero size, so this hero gives up its outlier
+             instead of the scale giving up its consistency. */
+          className="w-[587px] max-w-full text-[length:var(--text-heading)] font-normal leading-[1.2] text-[#1ef4d1]"
         >
           Insights
         </motion.h1>
 
-        <div className="flex flex-col items-start gap-[22px]">
+        {/* w-full, not shrink-to-fit: as an auto-width flex child this
+            stack sized itself to its w-[587px] children and their
+            max-w-full became circular, so it measured 587px wide and ran
+            off a 375px screen. Given a real width, max-w-full resolves. */}
+        <div className="flex w-full flex-col items-start gap-[22px]">
           <motion.p
             variants={riseIn}
-            className="w-[587px] max-w-full text-[42px] font-normal leading-[1.2] text-white"
+            className="w-[587px] max-w-full text-[30px] font-normal leading-[1.2] text-white md:text-[36px] lg:text-[42px]"
           >
             Powering a World That Works
           </motion.p>
 
           <motion.p
             variants={riseIn}
-            className="w-[516px] max-w-full text-[20px] font-medium leading-[1.5] tracking-[-0.4px] text-[#e3e3e3]"
+            className="w-[516px] max-w-full text-[length:var(--text-subheading)] font-medium leading-[1.5] tracking-[-0.4px] text-[#e3e3e3]"
           >
             Expert analysis, original research, and real-world stories that
             accelerate intelligent transformation.
           </motion.p>
         </div>
-      </motion.div>
+      </Container>
     </section>
   );
 };

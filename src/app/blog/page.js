@@ -51,7 +51,7 @@ const BG_ASPECT = 1440 / 3629
    settles on #009A81 — the gradient's own final stop — so the join is
    invisible rather than a visible edge. */
 const BG_GRADIENT =
-  'linear-gradient(180deg, #011720 0%, #02534B 38.676%, #047D6B 57.751%, #009A81 100%)'
+  'linear-gradient(180deg, #012532 0%, #02534B 38.676%, #047D6B 57.751%, #009A81 100%)'
 const BG_SETTLE = '#009A81'
 
 const Blog = () => {
@@ -61,10 +61,10 @@ const Blog = () => {
           cannot drift apart at any viewport width. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-0 top-0 z-0 w-full select-none"
+        className="pointer-events-none absolute left-0 top-0 z-0 w-screen select-none"
         style={{ aspectRatio: BG_ASPECT, backgroundImage: BG_GRADIENT }}
       >
-        <img src={bg.src} alt="" className="h-full w-full" />
+        <img src={bg.src} alt="" className="w-full" />
       </div>
 
       {/* CONTENT — z-10 keeps every section above the backdrop without
@@ -74,7 +74,15 @@ const Blog = () => {
         <Blog_FeaturedInsights />
         <Blog_AllInsights />
         <Blog_CaseStudies />
-        <Cta />
+        {/* Same CTA frame as About (1:4640 vs 1:4830) — identical
+            layout, different words. Verbatim from the comp, including
+            its space before the question mark. */}
+        <Cta
+          heading="stay ahead with smart insights ?"
+          body="Subscribe to our newsletter for the latest stories and industry updates."
+          buttonLabel="Subscribe Now"
+          href="/contact-us"
+        />
         <Faq />
         <Footer />
       </div>
