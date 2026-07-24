@@ -20,18 +20,16 @@
      between it tracks the viewport smoothly so there is no visible
      jump at any width.
 
-     --frame is 1760, not the comp's 1440. The comp is a fixed artboard;
-     a browser is not. Capping at 1440 meant a 1920 monitor showed a
-     1200px column with 360px of dead margin either side — the content
-     read as narrow and the sides as wasted. At 1760 the same monitor
-     gets a 1568px column.
+     --frame is 104rem — the "10xl" width (1664px), the single width
+     cap for every page and every section. Change it here and the
+     header, footer, hero and every section on all six pages follow,
+     because they all reach width through max-w-[var(--frame)].
 
-     TRADE-OFF, stated plainly: section internals still carry Figma's
-     literal pixel widths, which were measured against a 1200 column.
-     They do not grow with this — they simply get more room around
-     them. The layout is wider; the individual blocks are unchanged.
+     (Note: Tailwind's built-in scale stops at 7xl = 80rem. "10xl"
+     isn't a default class; it continues the pattern at +8rem per step
+     — 7xl 80rem, 8xl 88rem, 9xl 96rem, 10xl 104rem — the value here.)
      ---------------------------------------------------------------- */
-  --frame: 1760px;
+  --frame: 104rem; /* = "10xl" = 1664px */
   --gutter: clamp(20px, 5vw, 120px);
   --column: calc(min(100vw, var(--frame)) - var(--gutter) * 2);
 
@@ -167,16 +165,12 @@ body {
 .overview,
 .founder,
 .locations,
+.industries,
+.approach,
 .framework,
-.insights {
+.insights,
+.mission-vision {
   background: var(--surface-quiet);
-}
-
-/* The Our Industries frame (31:740) paints the full primary ramp —
-   the journey climbs from the page's dark base to the bright teal
-   horizon as the thread completes. */
-.industries {
-  background: var(--gradient-primary);
 }
 
 .about-cta {

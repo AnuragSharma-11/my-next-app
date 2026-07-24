@@ -63,7 +63,7 @@ const About_Principles = () => {
         variants={stage}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
+        viewport={{ once: false, amount: 0.15 }}
       >
         {/* HEADER — display type left, manifesto label + photo right.
             items-start keeps both columns hanging from the same top

@@ -6,13 +6,19 @@ import Overview from "./home-sections/Overview";
 import Founder from "./home-sections/Founder";
 import Locations from "./home-sections/Locations";
 import Industries from "./home-sections/Industries";
-import Framework from "./home-sections/Framework";
+import Approach from "./home-sections/Approach";
 import Insights from "./home-sections/Insights";
 
 /* Shared with About, Products and Blog — same Figma frames everywhere. */
 import Cta from "./components/Cta";
 import Faq from "./components/Faq";
 import Footer from "./components/Footer";
+
+/* Wraps a section so it blurs + fades as it scrolls up out of the top —
+   the "previous section" hand-off. Only used on ordinary flow sections;
+   the sticky/scrub ones (Overview) and the scroll-draw one (Industries)
+   must NOT get a filter ancestor, which would break their positioning. */
+import ScrollFade from "./components/ScrollFade";
 
 /* Section order follows the Home artboard (1:3386) top to bottom.
 
@@ -29,14 +35,27 @@ const page = () => {
           page down — the same colours meet at the boundary, so the
           pair still reads seamless without sharing one element. */}
       <Hero />
-      <Impact />
+      <ScrollFade>
+        <Impact />
+      </ScrollFade>
       <Overview />
-      <Founder />
-      <Locations />
+
+      <ScrollFade>
+        <Founder />
+      </ScrollFade>
+      <ScrollFade>
+        <Locations />
+      </ScrollFade>
       <Industries />
-      <Framework />
-      <Insights />
-      <Cta />
+      <ScrollFade>
+        <Approach />
+      </ScrollFade>
+      <ScrollFade>
+        <Insights />
+      </ScrollFade>
+      <ScrollFade>
+        <Cta />
+      </ScrollFade>
       <Faq />
       <Footer />
     </>

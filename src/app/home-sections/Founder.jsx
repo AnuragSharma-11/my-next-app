@@ -89,7 +89,7 @@ const Founder = () => {
         variants={stage}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{ once: false, amount: 0.2 }}
       >
         <div className="flex w-full flex-col items-start gap-[40px] lg:flex-row lg:justify-between lg:gap-0">
           {/* PULL QUOTE — the 156px gap between eyebrow and quote is

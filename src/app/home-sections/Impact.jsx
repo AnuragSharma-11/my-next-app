@@ -121,7 +121,7 @@ const riseIn = {
 const CountUp = ({ value }) => {
   const match = value.match(/^(\d+)(.*)$/);
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-15% 0px" });
+  const inView = useInView(ref, { once: false, margin: "-15% 0px" });
   const reduceMotion = useReducedMotion();
   const [display, setDisplay] = useState(0);
 
@@ -157,7 +157,7 @@ const Impact = () => (
         variants={stage}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.4 }}
+        viewport={{ once: false, amount: 0.4 }}
       >
         {/* CHAR REVEAL — chars ripple in as the band arrives. */}
         <CharReveal
@@ -168,6 +168,8 @@ const Impact = () => (
             { t: "Measurable Outcomes.", c: "text-[#02e2c5]" },
           ]}
         />
+        
+
       </motion.div>
 
       {/* THE BAND — equal columns at every width, centre-aligned like
@@ -181,7 +183,7 @@ const Impact = () => (
         variants={bandStage}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.25 }}
+        viewport={{ once: false, amount: 0.25 }}
       >
         {IMPACTS.map((item) => (
           <motion.article

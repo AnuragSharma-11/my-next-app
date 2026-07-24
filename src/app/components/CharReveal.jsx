@@ -74,10 +74,14 @@ const CharReveal = ({
         /* `amount` caps the TOTAL stagger: short headings ripple at
            ~20ms/char, long ones compress so the tail never drags. */
         stagger: { amount: Math.min(chars.length * 0.02, 0.6) },
+        /* toggleActions replays the reveal every time the heading
+           re-enters: play on enter, and REVERSE when it scrolls back
+           out of the top, so returning to the section rebuilds the
+           text character by character again. */
         scrollTrigger: {
           trigger: el,
           start: "top 85%",
-          once: true,
+          toggleActions: "play none none reverse",
         },
       }
     );

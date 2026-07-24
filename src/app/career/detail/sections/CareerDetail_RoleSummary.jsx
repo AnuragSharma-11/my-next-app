@@ -187,7 +187,7 @@ const CareerDetail_RoleSummary = () => {
           variants={stage}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: false, amount: 0.3 }}
         >
           <div className="flex flex-col gap-[24px]">
             <motion.div

@@ -20,6 +20,7 @@ import pinStem from "./assets/industries/pin-stem.svg";
 import pinGlow from "./assets/industries/pin-glow.png";
 import Container from "../components/Container";
 import Eyebrow from "../components/Eyebrow";
+import SectionBg from "../components/SectionBg";
 
 /* ==================================================================
    OUR INDUSTRIES  (Figma 1:3440 "Section-3-container", 1440x2539)
@@ -149,7 +150,7 @@ const INDUSTRIES = [
     x: 751,
     y: 425.8,
     side: "right",
-    at: 0.03,
+    at: 0.14,
   },
   {
     id: "ngo-healthcare",
@@ -160,7 +161,7 @@ const INDUSTRIES = [
     x: 69,
     y: 746.8,
     side: "left",
-    at: 0.18,
+    at: 0.204,
   },
   {
     id: "education",
@@ -171,7 +172,7 @@ const INDUSTRIES = [
     x: 304,
     y: 1155.8,
     side: "left",
-    at: 0.37,
+    at: 0.484,
   },
   {
     id: "automobile",
@@ -181,7 +182,7 @@ const INDUSTRIES = [
     x: 751,
     y: 1586.8,
     side: "right",
-    at: 0.58,
+    at: 0.651,
   },
   {
     id: "manufacturing",
@@ -191,7 +192,7 @@ const INDUSTRIES = [
     x: 69,
     y: 1930.8,
     side: "left",
-    at: 0.75,
+    at: 0.833,
   },
 ];
 
@@ -217,10 +218,10 @@ const GLOW_H = 15.97;
 
 const PINS = [
   { x: 143, y: 419, at: 0.02 },
-  { x: 243, y: 1036, at: 0.31 },
-  { x: 988, y: 1245, at: 0.41 },
-  { x: 625, y: 1673, at: 0.62 },
-  { x: 816, y: 2175, at: 0.87 },
+  { x: 243, y: 1036, at: 0.332 },
+  { x: 988, y: 1245, at: 0.501 },
+  { x: 625, y: 1673, at: 0.67 },
+  { x: 816, y: 2175, at: 0.874 },
 ];
 
 const pct = (v) => `${(v * 100).toFixed(4)}%`;
@@ -259,7 +260,7 @@ const IndustryCard = ({ item, progress, reduceMotion }) => {
      exactly on `at`, so the reveal is visibly caused by the line
      reaching the waypoint — with a small scale pop so it emerges
      rather than merely fades. */
-  const span = [Math.max(0, item.at - 0.05), item.at];
+  const span = [Math.max(0, item.at - 0.05), Math.min(1, item.at + 0.02)];
   const opacity = useTransform(progress, span, [0, 1]);
   const y = useTransform(progress, span, [28, 0]);
   const scale = useTransform(progress, span, [0.94, 1]);
@@ -268,57 +269,50 @@ const IndustryCard = ({ item, progress, reduceMotion }) => {
 
   return (
     <motion.article style={style} className="group/card relative">
-      {/* CARD BODY — card----1 (Figma 22:701), transcribed value for
-          value: 578x314, rounded-24, p-24, row gap-24, items-centre;
-          border on the BOTTOM and RIGHT edges only (the comp's light
-          source reads top-left, so those two edges catch the rim);
-          2% white wash over a 4px backdrop blur.
-
-          Left column is the comp's own 290.47px; the photo is 216x266
-          rounded-20. Below sm the row stacks instead of cropping. */}
-      <div className="flex flex-col gap-[24px] rounded-[24px] border-b border-r border-solid border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.02)] p-[24px] backdrop-blur-[4px] transition-[border-color,transform,box-shadow] duration-300 ease-out hover:-translate-y-[4px] hover:border-[#0cffd7]/30 hover:shadow-[0_16px_48px_rgba(0,0,0,0.25)] sm:flex-row sm:items-center">
-        <div className="flex w-full min-w-0 flex-col gap-[16px] sm:w-[290.47px] sm:shrink-0">
-          <div className="flex flex-col gap-[10px]">
-            {/* Tag-stack (22:704): 20.27x1.35 bar, 8px gap, 11px bold
-                label tracked +0.44. */}
-            <div className="flex items-center gap-[8px]">
-              <span aria-hidden className="block h-[1.35px] w-[20.27px] bg-[#0cffd7]" />
-              <p className="whitespace-nowrap text-[11px] font-bold tracking-[0.44px] text-[#0cffd7]">
+      {/* CARD BODY — spec'd by the client:
+            card:        16px padding all sides, 24px corner radius.
+            row gap:     24px between the text column and the photo.
+            alignment:   content justified TOP-to-BOTTOM — the kicker/
+                         heading/description group sits at the top, the
+                         "Learn more" link at the bottom (items-stretch
+                         + justify-between), and the photo fills the
+                         card's full height.
+          Border kept on the bottom+right edges only (the comp's rim
+          light), over a 2% white wash + 4px backdrop blur. Below sm
+          the row stacks instead of cropping. */}
+      <div className="flex flex-col gap-[24px] rounded-[24px] border-b border-r border-solid border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.02)] p-[16px] backdrop-blur-[4px] transition-[border-color,transform,box-shadow] duration-300 ease-out hover:-translate-y-[4px] hover:border-[#0cffd7]/30 hover:shadow-[0_16px_48px_rgba(0,0,0,0.25)] sm:min-h-[300px] sm:flex-row sm:items-stretch">
+        {/* TEXT COLUMN — top group pinned up, "Learn more" pinned down. */}
+        <div className="flex w-full min-w-0 flex-col justify-between gap-[24px] sm:flex-1">
+          {/* TOP GROUP: kicker, heading, description. */}
+          <div className="flex flex-col gap-[14px]">
+            {/* KICKER — dash + label. Label: BOLD / 12px. */}
+            <div className="flex items-center gap-[10px]">
+              <span aria-hidden className="block h-[2px] w-[20px] bg-[#0cffd7]" />
+              <p className="whitespace-nowrap text-[12px] font-bold uppercase tracking-[0.08em] text-[#0cffd7]">
                 {item.kicker}
               </p>
             </div>
-            <h3 className="text-[22px] font-bold leading-[1.2] text-white">
+            {/* HEADING — SEMIBOLD / 22px / 120% line-height. */}
+            <h3 className="text-[22px] font-semibold leading-[1.2] text-white">
               {item.heading}
             </h3>
+            {/* DESCRIPTION — MEDIUM / 14px / 150% line-height. */}
+            <p className="text-[14px] font-medium leading-[1.5] text-white/70">
+              {item.body}
+            </p>
           </div>
 
-          {/* Body (22:708): 13px medium, 1.6 leading, 70% white, the
-              comp's own 270.2px measure. NOT clamped — the comp shows
-              the full paragraph. */}
-          <p className="w-full text-[13px] font-medium leading-[1.6] tracking-[-0.13px] text-white/70 sm:w-[270.205px]">
-            {item.body}
-          </p>
-
-          <div className="flex flex-col items-start gap-[12px]">
-            {/* STAT CHIP (22:710): rounded-8 (not a pill), 6% teal
-                fill, 15% teal border, 12px semibold. Only rendered
-                where a real number exists. */}
-            {item.stat && (
-              <span className="rounded-[8px] border border-solid border-[rgba(12,255,215,0.15)] bg-[rgba(12,255,215,0.06)] px-[12px] py-[6px] text-[12px] font-semibold text-[#0cffd7]">
-                {item.stat}
-              </span>
-            )}
-            {/* Learn more (22:712): 13px semibold, text arrow glyph
-                exactly as the comp sets it. */}
-            <span className="flex items-center gap-[6px] text-[13px] font-semibold text-[#0cffd7]">
-              <span>Learn more</span>
-              <span aria-hidden className="transition-transform duration-300 group-hover/card:translate-x-[3px]">→</span>
-            </span>
-          </div>
+          {/* LEARN MORE — SEMIBOLD / 14px, at the bottom of the column. */}
+          <span className="flex items-center gap-[6px] text-[14px] font-semibold text-[#0cffd7]">
+            <span>Learn more</span>
+            <span aria-hidden className="transition-transform duration-300 group-hover/card:translate-x-[3px]">→</span>
+          </span>
         </div>
 
-        {/* PHOTO (22:715) — 216x266, rounded-20, cover. */}
-        <div className="relative h-[220px] w-full shrink-0 overflow-hidden rounded-[20px] sm:h-[266px] sm:w-[216px]">
+        {/* PHOTO — 20px radius, fills the card's full height (self-
+            stretch), fixed width on desktop. On mobile it takes a set
+            height since the row is stacked. */}
+        <div className="relative h-[220px] w-full shrink-0 overflow-hidden rounded-[20px] sm:h-auto sm:w-[216px] sm:self-stretch">
           <Image
             src={studentPhoto}
             alt="A student working at a laptop in a classroom"
@@ -442,8 +436,15 @@ const Industries = () => {
   useEffect(() => {
     const st = ScrollTrigger.create({
       trigger: stageRef.current,
-      start: "top 80%",
-      end: "bottom 95%",
+      /* Start the draw when the FIRST NODE reaches the CENTRE of the
+         screen — not when the stage's top edge enters. Pin 1 sits at
+         y=419 of the 2490-frame, so its offset from the stage top is
+         that fraction of the rendered stage height; `top+=<offset>
+         center` fires exactly when that point is vertically centred.
+         Function form so it re-measures on resize. */
+      start: () =>
+        `top+=${(stageRef.current.offsetHeight * 419) / FRAME_H} center`,
+      end: "bottom 60%",
       scrub: 0.6,
       onUpdate: (self) => progress.set(self.progress),
     });
@@ -490,6 +491,9 @@ const Industries = () => {
       id="industries"
       className="industries relative w-full overflow-hidden"
     >
+      {/* The teal light-ribbon backdrop — Industries only. */}
+      <SectionBg opacity={0.7} />
+
       {/* ================= HEADING =================
           In Container, because the comp's Heading-Container is exactly
           430+206+564 = 1200 wide and centred — it IS the content
@@ -511,7 +515,7 @@ const Industries = () => {
           variants={stage}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.5 }}
+          viewport={{ once: false, amount: 0.5 }}
         >
           {/* Figma's clip window with the eyebrow wiping up into it. */}
           <div className="overflow-hidden">
@@ -570,9 +574,17 @@ const Industries = () => {
           width. Un-lock the aspect and the path shears away from its
           markers — which is exactly what a preserveAspectRatio="none"
           export does if you let its box drift. */}
+      {/* The stage is pulled UP under the header (negative margin): the
+          comp overlays the header on the SAME frame as the cards, but
+          this build renders the header as a separate block above the
+          stage, which double-counted the top space and left a full
+          empty screen before the first card. The stage's own top band
+          is empty (the line only starts drawing there), so tucking it
+          behind the header removes the gap without hiding anything —
+          the header sits top-right, the line begins top-left. */}
       <div
         ref={stageRef}
-        className="relative z-10 mx-auto hidden w-full max-w-[1440px] xl:block"
+        className="relative z-10 mx-auto hidden w-full max-w-[var(--frame)] xl:-mt-[360px] xl:block"
         style={{ aspectRatio: `${FRAME_W} / ${STAGE_H}` }}
       >
         {/* SERPENTINE PATH */}
@@ -701,7 +713,7 @@ const Industries = () => {
             className="w-full max-w-[578px]"
             initial={reduceMotion ? undefined : { opacity: 0, y: 28 }}
             whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
+            viewport={{ once: false, amount: 0.4 }}
             transition={{ duration: 0.7, ease: EASE, delay: (i % 2) * 0.1 }}
           >
             <IndustryCard item={item} progress={progress} reduceMotion />

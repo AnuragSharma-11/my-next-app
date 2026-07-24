@@ -101,7 +101,7 @@ const Faq = () => {
         variants={stage}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.25 }}
+        viewport={{ once: false, amount: 0.25 }}
         className="relative z-10 flex flex-col items-start justify-between gap-[40px] lg:flex-row lg:gap-[16px]"
       >
         {/* INTRO COLUMN — fixed 430px like the comp's eyebrow column,

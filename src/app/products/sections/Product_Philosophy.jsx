@@ -114,7 +114,7 @@ const Product_Philosophy = () => {
       : {
           initial: "hidden",
           whileInView: "shown",
-          viewport: { once: true, amount: 0.6 },
+          viewport: { once: false, amount: 0.6 },
           transition: { duration, ease: EASE, delay },
         };
 

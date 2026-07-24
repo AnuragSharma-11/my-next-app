@@ -13,6 +13,7 @@ import Container from "../components/Container";
 import Eyebrow from "../components/Eyebrow";
 
 import backdropGlow from "./assets/overview/backdrop-glow.svg";
+import bgImage from "./assets/overview/bgimg.svg";
 import arrow from "./assets/overview/arrow-right.svg";
 /* The cliff photo already shipped in this repo as a 3080x2232 public
    asset. Figma exports the same photograph at 1672x1211 — verified by
@@ -23,7 +24,7 @@ import arrow from "./assets/overview/arrow-right.svg";
    next/image needs headroom above 1440 to serve wide displays. */
 /* The studio photo the user placed in this section's own asset
    folder — replaces the earlier cliff-city plate. */
-import cliffCity from "./assets/overview/image.png";
+import cliffCity from "./assets/overview/bg-122334455.png";
 
 /* ------------------------------------------------------------------
    MOTION
@@ -121,12 +122,18 @@ const Overview = () => {
   const photoScaleX = useTransform(progress, KEYS, BOX.map((b) => b.w));
   const photoScaleY = useTransform(progress, KEYS, BOX.map((b) => b.h));
 
-  // Figma darkens the photo by rgba(1,28,38,0.2) only in Variant4 — it
-  // arrives with the overlay text, because that text has to stay legible
-  // against a bright sunrise.
-  const scrimOpacity = useTransform(progress, KEYS, [0, 0, 0, 1]);
+  // The black dim tracks COVERAGE: it starts at 0 when the photo covers
+  // ~70% of the screen (progress ~0.25) and reaches its full — but still
+  // slight (0.32) — value exactly as the photo hits full bleed (progress
+  // ~0.67), holding there. So the image visibly, gradually dims as it
+  // grows to fill the screen, then stays gently dark under the reveal.
+  const scrimOpacity = useTransform(progress, [0.25, 0.67], [0, 1]);
 
-  const copyOpacity = useTransform(progress, KEYS, [1, 0.6, 0.4, 0.4]);
+  /* Fades the intro layer FULLY out as the photo grows to full bleed,
+     rather than settling at 0.4 — at 0.4 the copy stayed visible under
+     the expanding image and read as text bleeding behind it. Gone by
+     the time the photo covers it (sample 3), so the handoff is clean. */
+  const copyOpacity = useTransform(progress, KEYS, [1, 0.45, 0, 0]);
 
   /* The eyebrow does not just recolour — the words change, OVERVIEW to
      WHO WE ARE. Two Eyebrow instances stacked and crossfaded is the only
@@ -196,6 +203,31 @@ const Overview = () => {
           in globals.css owns the section's surface (--surface-quiet),
           and an inline ramp here restarted the page's gradient arc. */}
       <motion.div className="sticky top-0 h-screen w-full overflow-clip">
+        {/* PALETTE BASE — the HERO's own gradient, so the pinned Overview
+            view shares the hero's colour family (dark base climbing to
+            teal) instead of the flat navy it had. Everything else layers
+            over this. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{ background: "var(--gradient-primary)" }}
+        />
+
+        {/* AMBIENT BACKDROP — the teal light-ribbon (bgimg). It is teal
+            on BLACK, so mix-blend-screen drops the black entirely and
+            only the glowing wave adds light over the navy surface —
+            immersive, not a competing dark plate. Sits on the right,
+            where the intro's negative space is, and is knocked back so
+            it reads as atmosphere behind the copy rather than subject.
+            z-0: below the glow, the copy and the growing photo, so the
+            photo still covers it cleanly at full bleed. */}
+        <img
+          src={bgImage.src}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 right-0 z-0 h-full w-[70%] object-cover opacity-[0.55] mix-blend-screen [mask-image:linear-gradient(90deg,transparent_0%,black_45%)]"
+        />
+
         {/* BACKDROP GLOW — four heavily blurred ellipses.
 
             The blur pads the export canvas well beyond the layer box:
@@ -245,32 +277,75 @@ const Overview = () => {
               they stack the same height just strands the copy, so the
               proportion — and the row — start at lg. */}
           <Container className="flex flex-col gap-[32px] lg:h-[84.5%] lg:flex-row lg:items-stretch lg:gap-0">
-            {/* LEFT COLUMN — eyebrow pinned top, copy block pinned bottom */}
-            <div className="flex w-full shrink-0 flex-col justify-between gap-[24px] lg:w-[430px] lg:gap-0">
-              {/* The two eyebrows occupy the same grid cell so the
-                  crossfade happens in place instead of reflowing. */}
-              <div className="grid">
-                <motion.div
-                  className="col-start-1 row-start-1"
-                  style={{ opacity: still(eyebrowAOpacity, 1) }}
+            {/* LEFT COLUMN — one clean left-aligned stack now: the
+                eyebrow, the display heading and the Eco-System button
+                form the TOP group (all sharing the gutter edge), and
+                the intro copy is pinned to the BOTTOM. This replaces
+                the old split where the heading floated in a separate
+                right column, disconnected from the left edge. Widened
+                to 600px so the 564px heading fits. */}
+            <div className="flex w-full shrink-0 flex-col justify-between gap-[40px] lg:w-[600px] lg:gap-0">
+              {/* TOP GROUP — eyebrow, heading, button, left-aligned. */}
+              <div className="flex flex-col items-start gap-[32px]">
+                {/* The two eyebrows occupy the same grid cell so the
+                    crossfade happens in place instead of reflowing. */}
+                <div className="grid">
+                  <motion.div
+                    className="col-start-1 row-start-1"
+                    style={{ opacity: still(eyebrowAOpacity, 1) }}
+                  >
+                    <Eyebrow label="OVERVIEW" color="#0cffd7" barWidth={36} />
+                  </motion.div>
+                  <motion.div
+                    className="col-start-1 row-start-1"
+                    style={{ opacity: still(eyebrowBOpacity, 0) }}
+                  >
+                    <Eyebrow
+                      label="WHO WE ARE"
+                      color="#a3e4ff"
+                      barColor="#086083"
+                      barWidth={36}
+                    />
+                  </motion.div>
+                </div>
+
+                <motion.h2
+                  /* Sized as --text-section * 42/52: the comp animates
+                     this heading 42px -> 52px across the scrub (the
+                     headingScale transform multiplies by 52/42), so the
+                     BASE is the section token pre-scaled down and the
+                     scrub lands it exactly ON var(--text-section). */
+                  className="w-[564px] max-w-full origin-left text-[length:calc(var(--text-section)*0.80769)] font-normal leading-[1.2] text-white"
+                  style={{ scale: still(headingScale, 1) }}
                 >
-                  <Eyebrow label="OVERVIEW" color="#0cffd7" barWidth={36} />
-                </motion.div>
-                <motion.div
-                  className="col-start-1 row-start-1"
-                  style={{ opacity: still(eyebrowBOpacity, 0) }}
+                  We build businesses Designed for decades, Not Projects.
+                </motion.h2>
+
+                {/* ECO-SYSTEM BUTTON — the outline fills in across the
+                    scrub (that fill is why it is not the shared
+                    PillButton, which has no gradient-filled state). */}
+                <motion.a
+                  href="/eco-system"
+                  className="relative flex h-[50px] w-[240px] items-center justify-center gap-[8px] rounded-[60px] border border-solid px-[16px] py-[8px] shadow-[2px_4px_20px_0px_rgba(0,0,0,0.25)]"
+                  style={{ borderColor: still(btnBorder, "rgba(255,255,255,1)") }}
                 >
-                  <Eyebrow
-                    label="WHO WE ARE"
-                    color="#a3e4ff"
-                    barColor="#086083"
-                    barWidth={36}
+                  <motion.span
+                    aria-hidden
+                    className="absolute inset-0 rounded-[60px] bg-gradient-to-r from-[#085f83] to-[#021922]"
+                    style={{ opacity: still(btnFillOpacity, 0) }}
                   />
-                </motion.div>
+                  <span className="relative whitespace-nowrap text-[20px] font-semibold leading-none tracking-[-0.4px] text-white">
+                    Eco-System
+                  </span>
+                  <span className="relative flex h-[12px] w-[16px] shrink-0">
+                    <img src={arrow.src} alt="" className="h-[12px] w-[16px]" />
+                  </span>
+                </motion.a>
               </div>
 
-              <div className="flex flex-col justify-between gap-[24px] lg:h-[438px] lg:gap-0">
-                <div className="flex flex-col justify-between gap-[16px] text-[length:clamp(1.0625rem,1.389vw,1.25rem)] font-medium leading-[1.55] tracking-[-0.44px] text-white lg:h-[396px] lg:gap-0">
+              {/* BOTTOM — intro copy + closing rule. */}
+              <div className="flex flex-col justify-between gap-[24px] lg:gap-0">
+                <div className="flex flex-col justify-between gap-[16px] text-[length:clamp(1.25rem,1.5vw,1.375rem)] font-medium leading-[1.55] tracking-[-0.44px] text-white lg:h-[396px] lg:gap-0">
                   <p className="w-[400px] max-w-full">
                     Founded in 2012 by Mr. Pankaj Gupta in Jaipur, India, we
                     have grown from our local roots into a global presence,
@@ -309,50 +384,10 @@ const Overview = () => {
               </div>
             </div>
 
-            {/* RIGHT COLUMN — display heading and the Eco-System pill */}
-            <div className="flex w-full min-w-px flex-1 flex-col items-start gap-[24px] lg:gap-[40px]">
-              <motion.h2
-                /* Sized as --text-section * 42/52: the comp animates
-                   this heading 42px -> 52px across the scrub (the
-                   headingScale transform above multiplies by 52/42),
-                   so the BASE is the section token pre-scaled down and
-                   the scrub lands it exactly ON var(--text-section).
-                   A raw token here would overshoot to 64px at rest. */
-                className="w-[564px] max-w-full origin-left text-[length:calc(var(--text-section)*0.80769)] font-normal leading-[1.2] text-white"
-                style={{ scale: still(headingScale, 1) }}
-              >
-                We build businesses Designed for decades, Not Projects.
-              </motion.h2>
-
-              {/* ECO-SYSTEM BUTTON — deliberately not Primarybtn.
-
-                  Primarybtn is a 344px pill at 24px with a 2px border and
-                  a LEADING arrow; this is 240x50 at 20px with a 1px
-                  border and a TRAILING arrow. Nothing but the rounded
-                  shape is shared, and Primarybtn has no gradient-filled
-                  state at all — which is the whole point here, since the
-                  outline fills in across the scrub. Reusing it would have
-                  meant overriding every single value it sets. */}
-              <motion.a
-                href="/eco-system"
-                className="relative flex h-[50px] w-[240px] items-center justify-center gap-[8px] rounded-[60px] border border-solid px-[16px] py-[8px] shadow-[2px_4px_20px_0px_rgba(0,0,0,0.25)]"
-                style={{ borderColor: still(btnBorder, "rgba(255,255,255,1)") }}
-              >
-                <motion.span
-                  aria-hidden
-                  className="absolute inset-0 rounded-[60px] bg-gradient-to-r from-[#085f83] to-[#021922]"
-                  style={{ opacity: still(btnFillOpacity, 0) }}
-                />
-                <span className="relative whitespace-nowrap text-[20px] font-semibold leading-none tracking-[-0.4px] text-white">
-                  Eco-System
-                </span>
-                {/* 16x12 export with preserveAspectRatio="none", so both
-                    dimensions are pinned or it stretches to its box. */}
-                <span className="relative flex h-[12px] w-[16px] shrink-0">
-                  <img src={arrow.src} alt="" className="h-[12px] w-[16px]" />
-                </span>
-              </motion.a>
-            </div>
+            {/* RIGHT SIDE — left empty on purpose: the photo (a
+                separate absolute layer below) grows over this half, so
+                the flow content stays entirely in the left column. */}
+            <div className="hidden lg:block lg:flex-1" />
           </Container>
         </motion.div>
 
@@ -378,9 +413,14 @@ const Overview = () => {
             className="object-cover"
             placeholder="blur"
           />
+          {/* DIM — a slight BLACK layer that fades in as the photo grows
+              (scrimOpacity: 0 at ~70% coverage -> full at full bleed), so
+              the image visibly dims as it takes over and the reveal text
+              stays readable. Black, low opacity — a gentle darkening, not
+              a heavy overlay. */}
           <motion.span
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[rgba(1,28,38,0.2)]"
+            className="pointer-events-none absolute inset-0 bg-[rgba(0,0,0,0.38)]"
             style={{ opacity: still(scrimOpacity, 0) }}
           />
         </motion.div>

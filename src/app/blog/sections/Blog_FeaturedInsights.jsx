@@ -92,7 +92,7 @@ const Blog_FeaturedInsights = () => {
         variants={stage}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
+        viewport={{ once: false, amount: 0.15 }}
       >
         {/* HEADING STACK */}
         <div className="flex flex-col gap-[24px] [word-break:break-word]">

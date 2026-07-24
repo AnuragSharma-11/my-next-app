@@ -60,16 +60,15 @@ const OFFICES = [
 const Locations = () => {
   return (
     <section
-      className="locations relative w-full drop-shadow-[0px_4px_2px_rgba(0,0,0,0.25)]"
-
+      className="locations relative w-full overflow-hidden drop-shadow-[0px_4px_2px_rgba(0,0,0,0.25)]"
     >
       <Container
         as={motion.div}
-        className="py-[var(--section-pad)]"
+        className="relative z-10 py-[var(--section-pad)]"
         variants={stage}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{ once: false, amount: 0.2 }}
       >
         {/* HEADING ROW — two 600px halves of the 1200 column. The left
             half is justify-between over a fixed 462px so the button

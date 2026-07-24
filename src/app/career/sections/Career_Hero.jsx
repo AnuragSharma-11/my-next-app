@@ -78,7 +78,7 @@ const Career_Hero = () => {
         variants={stage}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
+        viewport={{ once: false, amount: 0.15 }}
       >
         {/* HEADING */}
         {/* The 160px band between headline and search is comp-literal at

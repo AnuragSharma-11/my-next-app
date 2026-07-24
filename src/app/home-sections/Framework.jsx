@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
@@ -179,7 +181,7 @@ const Framework = () => {
           variants={stage}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.4 }}
+          viewport={{ once: false, amount: 0.4 }}
         >
           <div className="flex w-full min-w-px flex-1 flex-col gap-[24px]">
             {/* The comp stores this heading with a U+2028 line
@@ -321,7 +323,7 @@ const Framework = () => {
             variants={stage}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.3 }}
           >
             {[0, 1].map((row) => (
               <div

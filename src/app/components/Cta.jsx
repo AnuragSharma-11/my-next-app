@@ -99,7 +99,7 @@ const Cta = ({
         variants={stage}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: false, amount: 0.3 }}
       >
         <div className="flex w-full flex-col items-center gap-[32px] capitalize text-white">
           <motion.h2
